@@ -1,14 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import CombineContext from './context/CombineContext';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <CombineContext>
       <App />
-    </CombineContext>
   </React.StrictMode>,
   document.getElementById('root')
 );

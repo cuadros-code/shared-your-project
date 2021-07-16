@@ -1,13 +1,16 @@
-import React from 'react'
 import AuthContext from './auth/AuthContext'
+import theme from './colorTheme/themeContext'
+import { ThemeProvider } from '@material-ui/core'
 
 const CombineContext = ( {children} ) => {
 
   return (
     <>
-    <AuthContext>
-      { children }        
-    </AuthContext>
+      <ThemeProvider theme={theme}>
+        <AuthContext>
+          { children }        
+        </AuthContext>
+      </ThemeProvider>
     </>
   )
 }

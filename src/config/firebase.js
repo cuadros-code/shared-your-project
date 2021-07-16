@@ -13,7 +13,9 @@ const firebaseConfig = {
 }
 
 // Initialize Firebase
-firebase.apps.length = 0 ? firebase.initializeApp(firebaseConfig) : firebase.app()
+!firebase.apps.length && firebase.initializeApp(firebaseConfig)
+
+const googleProvider = new firebase.auth.GoogleAuthProvider()
 
 const firestore = firebase.firestore()
 const storage = firebase.storage()
@@ -21,6 +23,7 @@ const storage = firebase.storage()
 export {
     firebase,
     firestore,
+    googleProvider,
     storage
 }
 
