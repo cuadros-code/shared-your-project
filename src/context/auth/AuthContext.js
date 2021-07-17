@@ -12,14 +12,15 @@ const AuthState = ({children}) => {
 			user			: null,
 			loading		: false,
 			authError : false,
+			isAuth    : false,
 		}
 
     const [authState, dispatch] = useReducer(AuthReducer, initialState)
 
 		// Register new user
 		const registerNewUser = async ( {fullName, email, password} ) => {
-
 			dispatch({ type: authTypes.InitAction })
+
 			try {
 				const newUser = await firebase
 												.auth()
@@ -77,11 +78,36 @@ const AuthState = ({children}) => {
 				dispatch({ type: authTypes.NewError })
 			}
 		}
+
+		const getCurrentUser = async ( ) => {
+			try {
+				firebase.auth().onAuthStateChanged( (user) => {
+					if(user){
+						dispatch({ type: authTypes.LoginUser, payload:user })
+					}else{
+						dispatch({ type: authTypes.LogoutUser })	
+					}
+				})
+			} catch (error) {
+				alertError({message: 'Error en autenticar usuario'})
+			}
+		}
+		
+		const logoutUser = async () => {
+			try {
+				await firebase.auth().signOut()
+				dispatch({ type: authTypes.LogoutUser })
+			} catch (error) {
+				alertError({message: 'Error al cerrar sesión'})
+			}
+		}
 		
     return (
       <AuthContext.Provider
 				value={{
 					authState,
+					logoutUser,
+					getCurrentUser,
 					registerNewUser,
 					loginWithGoogle,
 					loginWithEmailAndPassword

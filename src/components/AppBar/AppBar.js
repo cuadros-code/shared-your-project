@@ -1,23 +1,26 @@
-import { useState } from 'react';
-import { useStyles } from './appBarStyle';
-import MoreIcon  from '@material-ui/icons/MoreVert';
-import AppBarMaterial from '@material-ui/core/AppBar';
-import Badge from '@material-ui/core/Badge';
-import IconButton from '@material-ui/core/IconButton';
-import InputBase from '@material-ui/core/InputBase';
-import MailIcon from '@material-ui/icons/Mail';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import SearchIcon from '@material-ui/icons/Search';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { Avatar, Button } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import Toolbar from '@material-ui/core/Toolbar';
 import styled from 'styled-components'
+import SearchIcon from '@material-ui/icons/Search';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import MoreIcon  from '@material-ui/icons/MoreVert';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import MailIcon from '@material-ui/icons/Mail';
+import InputBase from '@material-ui/core/InputBase';
+import IconButton from '@material-ui/core/IconButton';
+import Badge from '@material-ui/core/Badge';
+import AppBarMaterial from '@material-ui/core/AppBar';
+import { useStyles } from './appBarStyle';
+import { useState, useContext } from 'react';
+import { routes } from '../../constants/routes';
+import { Link } from 'react-router-dom';
+import { Avatar } from '@material-ui/core';
+import { AuthContext } from '../../context/auth/AuthContext';
 
 const AppBar = () => {
 
+  const { authState: { user }, logoutUser } = useContext(AuthContext)
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
@@ -48,6 +51,10 @@ const AppBar = () => {
     >
       <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
       <MenuItem onClick={handleMenuClose}>Panel de control</MenuItem>
+      <MenuItem onClick={()=> {
+        handleMenuClose()
+        logoutUser()
+      }}>Cerrar sesión</MenuItem>
     </Menu>
   );
 
@@ -78,7 +85,9 @@ const AppBar = () => {
       <AppBarMaterial position="static">
         <Toolbar>
           <Typography className={classes.title} variant="h6" noWrap>
-            Shared
+            <Link to={routes.home} style={{color: 'white'}} >
+              Shared
+            </Link>
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
@@ -96,21 +105,11 @@ const AppBar = () => {
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             {
-              true 
+              user
               ? 
               <>
-                <LinkItem >Iniciar sesión</LinkItem>
-                <LinkItem >Registrarse</LinkItem>
-              </>
-              :
-              <>
-                <IconButton aria-label="show 4 new mails" color="inherit">
-                  <Badge badgeContent={4} color="secondary">
-                    <MailIcon />
-                  </Badge>
-                </IconButton>
                 <IconButton aria-label="show 17 new notifications" color="inherit">
-                  <Badge badgeContent={17} color="secondary">
+                  <Badge badgeContent={1} color="secondary">
                     <NotificationsIcon />
                   </Badge>
                 </IconButton>
@@ -124,6 +123,11 @@ const AppBar = () => {
                 >
                   <Avatar src="http://javadesde0.com/wp-content/uploads/480px-Unofficial_JavaScript_logo_2.svg_.png"  />
                 </IconButton>
+              </>
+              :
+              <>
+                <LinkItem to={routes.login} >Iniciar sesión</LinkItem>
+                <LinkItem to={routes.register} >Registrarse</LinkItem>
               </>
             }
           </div>
@@ -141,7 +145,7 @@ const AppBar = () => {
         </Toolbar>
       </AppBarMaterial>
       {renderMobileMenu}
-      {renderMenu}
+      {user && renderMenu}
     </div>
   );
 }

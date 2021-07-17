@@ -1,4 +1,5 @@
 import { Redirect, Route } from 'react-router-dom'
+import { routes } from '../constants/routes'
 
 const PublicRoute = ({component: Component, isAuth, ...restProps}) => {
   return (
@@ -8,7 +9,7 @@ const PublicRoute = ({component: Component, isAuth, ...restProps}) => {
         (props) => (
           (!isAuth )
           ? <Component {...props}/> 
-          : <Redirect to="/profiles"/>
+          : <Redirect to={routes.profile} />
       )}
     />
   )

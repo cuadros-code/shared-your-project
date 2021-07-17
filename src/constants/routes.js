@@ -5,4 +5,5 @@ export const routes = {
   resetPassword: '/reset',
 
   profile : '/profile',
+  home    : '/home'
 }

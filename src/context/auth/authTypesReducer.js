@@ -4,4 +4,5 @@ export const authTypes = {
     NewError    : 'New_Error',
     RegisterUser: 'Register_User',
     LoginUser   : 'Login_User',
+    LogoutUser  : 'Logout_User'
 }

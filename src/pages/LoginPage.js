@@ -54,7 +54,7 @@ const LoginPage = () => {
                 />
                 {errors.password && <Alert>Este campo es obligatorio</Alert>}
             </ContentInput>
-            <LinkTo >Olvidaste tu contraseña?</LinkTo>
+            <LinkTo to={routes.resetPassword} >Olvidaste tu contraseña?</LinkTo>
             <ContentInput>
               <Button
                 variant="contained"
