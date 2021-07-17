@@ -21,7 +21,13 @@ const RegisterPage = () => {
     <Content>
       <Container>
           <Form onSubmit={ handleSubmit( onSubmit ) } >
-            <Typography variant="h5" className="title" >Crear una cuenta</Typography>
+            <Typography 
+              variant="h5" 
+              className="title" 
+              color="primary"
+            >
+              Crear una cuenta
+            </Typography>
             
             <ContentInput>
               <TextField 

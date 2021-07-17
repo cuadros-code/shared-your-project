@@ -25,7 +25,13 @@ const LoginPage = () => {
     <Content>
       <Container>
           <Form onSubmit={ handleSubmit( onSubmit ) } >
-            <Typography variant="h5" className="title" >Ingrese a su cuenta</Typography>
+            <Typography 
+              variant="h5" 
+              className="title" 
+              color="primary"
+            >
+              Ingrese a su cuenta
+            </Typography>
             <ContentInput>
               <TextField 
                 fullWidth
@@ -88,7 +94,7 @@ export const LinkTo = styled(Link)`
 
 export const Container = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 90vh;
   display: flex;
   justify-content: center;
   align-items: center;
