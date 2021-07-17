@@ -1,11 +1,12 @@
 import { createContext, useReducer } from "react"
 import AuthReducer from "./AuthReducer"
-import { firebase } from '../../config/firebase'
+import { firebase, googleProvider } from '../../config/firebase'
 import { authTypes } from "./authTypesReducer"
+import alertError from "../../components/Alerts/AlertError"
 
-const Context = createContext()
+export const AuthContext = createContext()
 
-const AuthContext = ({children}) => {
+const AuthState = ({children}) => {
 
 		const initialState = {
 			user			: null,
@@ -15,28 +16,80 @@ const AuthContext = ({children}) => {
 
     const [authState, dispatch] = useReducer(AuthReducer, initialState)
 
-		const registerNewUser = async ( email, password ) => {
+		// Register new user
+		const registerNewUser = async ( {fullName, email, password} ) => {
+
+			dispatch({ type: authTypes.InitAction })
 			try {
 				const newUser = await firebase
-															.auth()
-															.createUserWithEmailAndPassword( email, password )
-				console.log(newUser)
-			} catch (error) {
-				dispatch( { type: authTypes.NewError } )
-			}
+												.auth()
+												.createUserWithEmailAndPassword( email, password )
 
+				await newUser.user.updateProfile({
+					displayName: fullName
+				})				
+				
+				dispatch({ type: authTypes.RegisterUser, payload: newUser.user })
+			} catch (error) {
+				console.log(error)
+				if(error.code === 'auth/email-already-in-use'){
+					alertError({message: 'El correo ya se encuentra registrado.'})
+				}
+				dispatch({ type: authTypes.NewError })
+			}
 		}
 
+		// Login with google
+		const loginWithGoogle = async () => {
+
+			dispatch({ type: authTypes.InitAction })
+			try {
+				const userLogin = await firebase
+												  .auth()
+													.signInWithPopup( googleProvider )
+
+				dispatch({ type: authTypes.RegisterUser, payload: userLogin.user })
+			} catch (error) {
+				console.log(error)
+				if(error.code === 'auth/account-exists-with-different-credential')
+					alertError({message: 'El usuario ya se encuentra registrado.'})
+				dispatch({ type: authTypes.NewError })
+			}
+		}
+
+		// Login email and password
+		const loginWithEmailAndPassword = async ({email, password}) => {
+
+			dispatch({ type: authTypes.InitAction })
+			try {
+				const loginUser = await firebase
+													.auth()
+													.signInWithEmailAndPassword(email, password)
+				
+				dispatch({ type: authTypes.LoginUser, payload: loginUser.user })
+			} catch (error) {
+				console.log(error)
+				if(error.code === 'auth/wrong-password')
+					alertError({message: 'Usuario o contraseña incorrecta'})
+
+				if(error.code === 'auth/user-not-found')
+					alertError({message: 'El correo no se encuentra registrado.'})
+				dispatch({ type: authTypes.NewError })
+			}
+		}
+		
     return (
-      <Context.Provider
+      <AuthContext.Provider
 				value={{
 					authState,
 					registerNewUser,
+					loginWithGoogle,
+					loginWithEmailAndPassword
 				}}
 			>
           {children}
-      </Context.Provider>
+      </AuthContext.Provider>
     )
 }
 
-export default AuthContext
+export default AuthState

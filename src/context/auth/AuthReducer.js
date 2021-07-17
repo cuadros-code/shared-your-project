@@ -12,11 +12,19 @@ const AuthReducer = ( state, action ) => {
         ...state,
         loading: true
       }
-    
+
+    case authTypes.RegisterUser:
+      return{
+        ...state,
+        user   : action.payload,
+        loading: false
+      }
+
     case authTypes.NewError:
       return{
         ...state,
-        authError: action.payload
+        authError: action.payload,
+        loading  : false
       }
 
     default:

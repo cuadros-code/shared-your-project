@@ -1,3 +1,4 @@
+import { ToastContainer } from "react-toastify"
 import CombineContext from "./context/CombineContext"
 import AppRouter from "./routes/AppRouter"
 
@@ -7,6 +8,7 @@ const App = () => {
       <CombineContext>
         <AppRouter />
       </CombineContext>
+      <ToastContainer />
     </>
   );
 }

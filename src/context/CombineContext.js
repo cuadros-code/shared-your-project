@@ -1,4 +1,4 @@
-import AuthContext from './auth/AuthContext'
+import AuthState from './auth/AuthContext'
 import theme from './colorTheme/themeContext'
 import { ThemeProvider } from '@material-ui/core'
 
@@ -7,9 +7,9 @@ const CombineContext = ( {children} ) => {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <AuthContext>
+        <AuthState>
           { children }        
-        </AuthContext>
+        </AuthState>
       </ThemeProvider>
     </>
   )
