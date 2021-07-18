@@ -13,14 +13,14 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { useTheme } from '@material-ui/core/styles';
 import { routes } from '../../constants/routes';
 import { ListItem, ListItemIcon, ListItemText, Avatar, InputBase, MenuItem, Menu } from '@material-ui/core'
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Drawer, AppBar, Toolbar, List, Typography, IconButton } from '@material-ui/core'
 import { AuthContext } from '../../context/auth/AuthContext';
 
 
 const DrawerLeft = () => {
   const { authState: { user }, logoutUser } = useContext(AuthContext)
-
+  const history = useHistory()
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -60,8 +60,11 @@ const DrawerLeft = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>
-        <Link to={routes.profile}>Perfil</Link> 
+      <MenuItem onClick={() => { 
+        handleMenuClose() 
+        history.push(routes.profile)
+      }}>
+        Perfil
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>Panel de control</MenuItem>
       <MenuItem onClick={()=> {
