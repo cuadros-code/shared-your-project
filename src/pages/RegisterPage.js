@@ -5,6 +5,7 @@ import { Container, Form, ImgGoogle, LinkTo , ContentInput, Content, Alert} from
 import { Button, CircularProgress, TextField, Typography } from '@material-ui/core'
 import { AuthContext } from '../context/auth/AuthContext'
 
+
 const RegisterPage = () => {
 
   const { register, handleSubmit, formState:{errors}, reset } = useForm()
@@ -20,7 +21,7 @@ const RegisterPage = () => {
   return (
     <Content>
       <Container>
-          <Form onSubmit={ handleSubmit( onSubmit ) } >
+          <Form  onSubmit={ handleSubmit( onSubmit ) } >
             <Typography 
               variant="h5" 
               className="title" 
@@ -85,7 +86,7 @@ const RegisterPage = () => {
             </ContentInput>
 
             <div>
-              Ya tines una cuenta? <LinkTo to={routes.login} >inicia sesión</LinkTo>
+              <strong> Ya tines una cuenta? <LinkTo to={routes.login} >inicia sesión</LinkTo></strong>
             </div>
           </Form>
       </Container>

@@ -1,26 +1,38 @@
-import Typography from '@material-ui/core/Typography';
-import Toolbar from '@material-ui/core/Toolbar';
+import { useContext, useState } from 'react';
+import useStyles from './drawerStyle';
 import styled from 'styled-components'
+import clsx from 'clsx';
 import SearchIcon from '@material-ui/icons/Search';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon  from '@material-ui/icons/MoreVert';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import InputBase from '@material-ui/core/InputBase';
-import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
-import AppBarMaterial from '@material-ui/core/AppBar';
-import { useStyles } from './appBarStyle';
-import { useState, useContext } from 'react';
+import MenuIcon from '@material-ui/icons/Menu';
+import MailIcon from '@material-ui/icons/Mail';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import { useTheme } from '@material-ui/core/styles';
 import { routes } from '../../constants/routes';
+import { ListItem, ListItemIcon, ListItemText, Avatar, InputBase, MenuItem, Menu } from '@material-ui/core'
 import { Link } from 'react-router-dom';
-import { Avatar } from '@material-ui/core';
+import { Drawer, AppBar, Toolbar, List, Typography, IconButton } from '@material-ui/core'
 import { AuthContext } from '../../context/auth/AuthContext';
 
-const AppBar = () => {
 
+const DrawerLeft = () => {
   const { authState: { user }, logoutUser } = useContext(AuthContext)
+
   const classes = useStyles();
+  const theme = useTheme();
+  const [open, setOpen] = useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
@@ -48,7 +60,9 @@ const AppBar = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        <Link to={routes.profile}>Perfil</Link> 
+      </MenuItem>
       <MenuItem onClick={handleMenuClose}>Panel de control</MenuItem>
       <MenuItem onClick={()=> {
         handleMenuClose()
@@ -70,36 +84,55 @@ const AppBar = () => {
     >
       {
         user ?
-        <>
-        <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
+        <span>
+        <MenuItem onClick={handleMenuClose}>
+          <Link to={routes.profile}>Perfil</Link> 
+        </MenuItem>
         <MenuItem onClick={handleMenuClose}>Panel de control</MenuItem>
         <MenuItem onClick={()=> {
           handleMenuClose()
           logoutUser()
         }}>Cerrar sesión</MenuItem>
-        </>
+        </span>
         :
-        <>
+        <span>
           <MenuItem >
             <Link to={routes.login} >Iniciar sesión</Link>
           </MenuItem>
           <MenuItem >
             <Link to={routes.register} >Registrarse</Link>
           </MenuItem>
-        </>
+        </span>
       }
     </Menu>
   );
 
   return (
-    <div className={classes.grow}>
-      <AppBarMaterial position="static">
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}
+      >
         <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            className={clsx(classes.menuButton, open && classes.hide)}
+          >
+            <MenuIcon />
+          </IconButton>
+
           <Typography className={classes.title} variant="h6" noWrap>
             <Link to={routes.home} style={{color: 'white'}} >
               Shared
             </Link>
           </Typography>
+
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -113,17 +146,14 @@ const AppBar = () => {
               inputProps={{ 'aria-label': 'search' }}
             />
           </div>
+
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             {
               user
               ? 
               <>
-                <IconButton aria-label="show 17 new notifications" color="inherit">
-                  <Badge badgeContent={1} color="secondary">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
+                
                 <IconButton
                   edge="end"
                   aria-label="account of current user"
@@ -154,14 +184,38 @@ const AppBar = () => {
             </IconButton>
           </div>
         </Toolbar>
-      </AppBarMaterial>
+
+      </AppBar>
+      <Drawer
+        className={`${classes.drawer}`}
+        variant="persistent"
+        anchor="left"
+        open={open}
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        <div className={`${classes.drawerHeader} drawer`}>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
+        </div>
+        <List>
+          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+            <ListItem button key={text}>
+              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
       {renderMobileMenu}
       {user && renderMenu}
     </div>
   );
 }
 
-export default AppBar
+export default DrawerLeft
 
 const LinkItem = styled(Link)`
   color: white;

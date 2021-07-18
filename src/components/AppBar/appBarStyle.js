@@ -53,13 +53,13 @@ export const useStyles = makeStyles((theme) => ({
   },
   sectionDesktop: {
     display: 'none',
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       display: 'flex',
     },
   },
   sectionMobile: {
     display: 'flex',
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       display: 'none',
     },
   },

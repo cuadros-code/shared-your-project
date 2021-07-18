@@ -6,6 +6,9 @@ import { routes } from '../constants/routes'
 import { primary } from '../config/colors'
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../context/auth/AuthContext'
+import svg from '../assets/profile.svg'
+
+
 
 const LoginPage = () => {
 
@@ -23,7 +26,7 @@ const LoginPage = () => {
 
   return (
     <Content>
-      <Container>
+      <Container >
           <Form onSubmit={ handleSubmit( onSubmit ) } >
             <Typography 
               variant="h5" 
@@ -73,7 +76,7 @@ const LoginPage = () => {
                 />
             </ContentInput>
             <div>
-              No tienes una cuenta? <LinkTo to={routes.register} >crea una</LinkTo>
+              <strong> No tienes una cuenta? <LinkTo to={routes.register} >crea una</LinkTo></strong>
             </div>
           </Form>
       </Container>
@@ -84,7 +87,18 @@ const LoginPage = () => {
 export default LoginPage
 
 export const Content = styled.div`
-  background-color: whitesmoke;
+  height: 100vh;
+  background-image: url(${svg});
+  background-position: bottom right;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: flex;
+  padding-bottom: 15px;
+  justify-content: center;
+  align-items: center;
+  @media( max-width: 800px ){
+    height: auto;
+  }
 `
 
 export const LinkTo = styled(Link)`
@@ -100,7 +114,7 @@ export const Container = styled.div`
   align-items: center;
 `
 export const ImgGoogle = styled.img`
-  width: 30px;
+  width: 40px;
   border-radius: 50px;
   cursor: pointer;
   padding: 10px;
@@ -112,13 +126,15 @@ export const ImgGoogle = styled.img`
 
 export const Form = styled.form`
   display: flex;
-  min-width: 350px;
-  min-height: 30px;
+  background-size: contain;
+  width: 100%;
+  min-width: 340px;
+  max-width: 380px;
   background-color: white;
   flex-direction: column;
   padding: 30px;
   border-radius: 15px;
-  box-shadow: 0px 0px 12px rgba(0,0,0,0.2);
+  box-shadow: 0px 0px 17px rgba(0,0,0,0.123);
 `
 
 export const ContentInput = styled.div`

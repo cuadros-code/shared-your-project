@@ -1,12 +1,10 @@
-import { lazy, Suspense, useContext, useEffect, useState } from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import useAuth from '../hooks/useAuth'
+import { lazy, Suspense, useContext, useEffect } from 'react'
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
 import { routes } from '../constants/routes'
 import PublicRoute from './PublicRoute'
 import { AuthContext } from '../context/auth/AuthContext'
 import PrivateRoute from './PrivateRoute'
-
-const AppBar = lazy(() => import('../components/AppBar/AppBar'))
+import DrawerLeft from '../components/Drawer/Drawer'
 
 const HomePage = lazy(() => import('../pages/HomePage'))
 const LoginPage = lazy(() => import('../pages/LoginPage'))
@@ -20,12 +18,13 @@ const AppRouter = () => {
 
   useEffect(() => {
     getCurrentUser()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <Router>
       <Suspense fallback={<p>Loading...</p>} >
-        <AppBar />
+        <DrawerLeft />
         <Switch>
 
           <Route 
@@ -57,8 +56,9 @@ const AppRouter = () => {
             isAuth={isAuth}
             component={ProfilePage}
           />
-
+          <Redirect to="home" />
         </Switch>
+        
       </Suspense>
     </Router>
   )
