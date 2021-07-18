@@ -66,7 +66,10 @@ const DrawerLeft = () => {
       }}>
         Perfil
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>Panel de control</MenuItem>
+      <MenuItem onClick={() => {
+        handleMenuClose()
+        history.push(routes.dashboard)
+      }}>Panel de control</MenuItem>
       <MenuItem onClick={()=> {
         handleMenuClose()
         logoutUser()

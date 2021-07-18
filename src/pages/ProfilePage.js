@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Button,  TextField, Typography } from "@material-ui/core"
+import { Button,  FormControlLabel,  Switch,  TextField, Typography } from "@material-ui/core"
 import { ContentInput } from "./LoginPage"
 import svg from '../assets/profile.svg'
 
@@ -39,56 +39,57 @@ const ProfilePage = () => {
             />
           </ContentInput>
         </Card>
-
-        <Card>
-          <Typography 
-            variant="h6" 
-            color="primary" 
-            style={{fontWeight:'bold', margin: '40px 15px'}}
-          >
-            Perfil profesional
-          </Typography>
-          <ContentInput>  
-            <TextField 
-              label="Link linkedin"
-              variant="outlined"
-              type="url"
-              fullWidth
+        <div style={{display: 'grid', gridTemplateColumns: '1fr', rowGap: '1rem'}}>
+          <Card style={{display:'flex', justifyContent: 'center'}}>
+            <FormControlLabel
+              value="start"
+              control={<Switch color="primary" />}
+              label="Buscando trabajo"
+              labelPlacement="start"
             />
-          </ContentInput>
-          <ContentInput>  
-            <TextField 
-              label="Link repositorio"
-              variant="outlined"
-              type="url"
+          </Card>
+          <Card>
+            <Typography 
+              variant="h6" 
+              color="primary" 
+              style={{fontWeight:'bold', margin: '15px 15px'}}
+            >
+              Perfil profesional
+            </Typography>
+            <ContentInput>  
+              <TextField 
+                label="Link linkedin"
+                variant="outlined"
+                type="url"
+                fullWidth
+              />
+            </ContentInput>
+            <ContentInput>  
+              <TextField 
+                label="Link repositorio"
+                variant="outlined"
+                type="url"
+                fullWidth
+              />
+            </ContentInput>
+            <ContentInput>  
+              <TextField 
+                label="Link portafolio"
+                variant="outlined"
+                type="url"
+                fullWidth
+              />
+            </ContentInput>
+            <Button
+              color="primary"
+              variant="contained"
               fullWidth
-            />
-          </ContentInput>
-          <ContentInput>  
-            <TextField 
-              label="Link portafolio"
-              variant="outlined"
-              type="url"
-              fullWidth
-            />
-          </ContentInput>
-          <ContentInput>  
-            <TextField 
-              label="Trabajo actual"
-              variant="outlined"
-              type="url"
-              fullWidth
-            />
-          </ContentInput>
-
-          <Button
-            color="primary"
-            variant="contained"
-            fullWidth
-          >
-            Guardar Información
-          </Button>
-        </Card>
+            >
+              Guardar Información
+            </Button>
+          </Card>
+         
+        </div>
 
       </ContentProfile>
     </Container>
@@ -139,7 +140,6 @@ const Card = styled.div`
   border-radius: 35px;
   box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
   padding: 15px 50px;
-
   @media(max-width: 450px){
     padding: 15px 25px;
   }

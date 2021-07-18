@@ -9,6 +9,7 @@ import DrawerLeft from '../components/Drawer/Drawer'
 const HomePage = lazy(() => import('../pages/HomePage'))
 const LoginPage = lazy(() => import('../pages/LoginPage'))
 const ProfilePage = lazy(() => import('../pages/ProfilePage'))
+const DashboardPage = lazy(() => import('../pages/DashboardPage'))
 const RegisterPage = lazy(() => import('../pages/RegisterPage'))
 const ResetPasswordPage = lazy(() => import('../pages/ResetPasswordPage'))
 
@@ -55,6 +56,12 @@ const AppRouter = () => {
             path={routes.profile}
             isAuth={isAuth}
             component={ProfilePage}
+          />
+          <PrivateRoute
+            exact
+            path={routes.dashboard}
+            isAuth={isAuth}
+            component={DashboardPage}
           />
           <Redirect to="home" />
         </Switch>
