@@ -2,16 +2,38 @@ import styled from "styled-components"
 import { Button,  FormControlLabel,  Switch,  TextField, Typography } from "@material-ui/core"
 import { ContentInput } from "./LoginPage"
 import svg from '../assets/profile.svg'
+import { useForm } from "react-hook-form"
+import { useState } from "react"
 
 const ProfilePage = () => {
+
+  const [imageAvatar, setImageAvatar] = useState('')
+  const { register, handleSubmit, formState: { errors },  } = useForm()
+
+
+  const onSubmit = (data) => {
+    console.log(data)
+  }
+
+  const onChangeImage = (e) => {
+    const file = e.target.files[0]
+    if(!file) return
+    const objectUrl = URL.createObjectURL(file)
+    setImageAvatar(objectUrl)
+  }
+
   return (
     <Container>
       <ContentProfile>
+        <Form onSubmit={ handleSubmit( onSubmit ) }>
         <Card>
           <ContentAvatar>
-            <ImageAvatar src="http://via.placeholder.com/700x500" alt="avatar"/>
+            <ImageAvatar src={imageAvatar ? imageAvatar: 'https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png?w=640'} alt="avatar"/>
             <ButtonImage color="primary" variant="outlined">
-              <InputImage type="file" />
+              <InputImage 
+                onChange={onChangeImage}
+                type="file" 
+              />
               Cambiar imagen
             </ButtonImage>
           </ContentAvatar>
@@ -19,6 +41,7 @@ const ProfilePage = () => {
             <TextField 
               label="Nombre completo"
               variant="outlined"
+              {...register('fullName', {required: true}) }
               fullWidth
             />
           </ContentInput>
@@ -27,6 +50,7 @@ const ProfilePage = () => {
               label="Edad"
               variant="outlined"
               fullWidth
+              {...register('age') }
               type="number"
             />
           </ContentInput>
@@ -34,16 +58,21 @@ const ProfilePage = () => {
             <TextField 
               label="Telefono"
               variant="outlined"
-              fullWidth
+              {...register('numberPhone') }
               type="number"
+              fullWidth
             />
           </ContentInput>
         </Card>
         <div style={{display: 'grid', gridTemplateColumns: '1fr', rowGap: '1rem'}}>
           <Card style={{display:'flex', justifyContent: 'center'}}>
             <FormControlLabel
-              value="start"
-              control={<Switch color="primary" />}
+              control={
+              <Switch
+                {...register("showAge")} 
+                color="primary" 
+                name="searchJob"
+              />}
               label="Buscando trabajo"
               labelPlacement="start"
             />
@@ -60,6 +89,7 @@ const ProfilePage = () => {
               <TextField 
                 label="Link linkedin"
                 variant="outlined"
+                {...register('urlLinkedin') }
                 type="url"
                 fullWidth
               />
@@ -68,6 +98,7 @@ const ProfilePage = () => {
               <TextField 
                 label="Link repositorio"
                 variant="outlined"
+                {...register('urlRepository') }
                 type="url"
                 fullWidth
               />
@@ -76,6 +107,7 @@ const ProfilePage = () => {
               <TextField 
                 label="Link portafolio"
                 variant="outlined"
+                {...register('urlPage') }
                 type="url"
                 fullWidth
               />
@@ -84,19 +116,22 @@ const ProfilePage = () => {
               color="primary"
               variant="contained"
               fullWidth
+              type="submit"
             >
               Guardar Información
             </Button>
           </Card>
          
         </div>
-
+        </Form>
       </ContentProfile>
     </Container>
   )
 }
 
 export default ProfilePage
+
+
 
 const Container = styled.div`
   height: 100vh;
@@ -108,31 +143,36 @@ const Container = styled.div`
   padding-bottom: 15px;
   justify-content: center;
   align-items: center;
-  @media( max-width: 800px ){
-    height: auto;
+  @media( max-width: 1000px ){
+    height: 100%;
     margin-top: 70px;
   }
 `
 const ContentProfile = styled.div`
   width: 70%;
   padding: 40px;
-  height: 90%;
+  height: auto;
   backdrop-filter: blur(10px);
   box-shadow: 0px 0px 25px rgba(0,0,0,0.198);
   border-radius: 35px;
+  @media( max-width: 1000px ){
+    width: 95%;
+    height: auto;
+    padding: 25px;
+  }
+`
+const Form = styled.form`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   column-gap: 3rem;
 
   @media( max-width: 800px ){
-    width: 95%;
-    margin-top: -50px;
+    width: 100%;
     grid-template-columns: repeat(1, 1fr);
     row-gap: 1rem;
+    margin: auto;
     height: auto;
-    padding: 25px;
   }
-
 `
 
 const Card = styled.div`

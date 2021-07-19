@@ -40,11 +40,10 @@ const useStyles = makeStyles((theme) => ({
   },
   drawer: {
     width: drawerWidth,
-    flexShrink: 0,
   },
   drawerPaper: {
     backgroundColor: '#e1e1e1',
-    width: drawerWidth,
+    width: drawerWidth ,
   },
   drawerHeader: {
     display: 'flex',
@@ -61,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: -drawerWidth,
+    marginLeft: -drawerWidth ,
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -86,22 +85,19 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   searchIcon: {
+    position: 'absolute',
     padding: theme.spacing(0, 2),
     height: '100%',
-    position: 'absolute',
     pointerEvents: 'none',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
   inputRoot: {
-    color: 'inherit',
+    color: 'white',
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
       width: '20ch',
@@ -119,6 +115,9 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
+  list: {
+    height: '100vh',
+  }
 }));
 
 export default useStyles

@@ -91,22 +91,33 @@ const DrawerLeft = () => {
       {
         user ?
         <span>
-        <MenuItem onClick={handleMenuClose}>
-          <Link to={routes.profile}>Perfil</Link> 
+        <MenuItem onClick={() => {
+            handleMenuClose()
+            history.push(routes.profile)
+        }}>
+          Perfil
         </MenuItem>
-        <MenuItem onClick={handleMenuClose}>Panel de control</MenuItem>
+        <MenuItem onClick={() => {
+          handleMenuClose()
+          history.push(routes.dashboard)
+         }}>
+           Panel de control
+        </MenuItem>
+
         <MenuItem onClick={()=> {
           handleMenuClose()
           logoutUser()
-        }}>Cerrar sesión</MenuItem>
+        }}>
+          Cerrar sesión
+        </MenuItem>
         </span>
         :
         <span>
-          <MenuItem >
-            <Link to={routes.login} >Iniciar sesión</Link>
+          <MenuItem onClick={() => history.push(routes.login)} >
+            Iniciar sesión
           </MenuItem>
-          <MenuItem >
-            <Link to={routes.register} >Registrarse</Link>
+          <MenuItem onClick={() => history.push(routes.register)} >
+            Registrarse
           </MenuItem>
         </span>
       }
@@ -145,6 +156,7 @@ const DrawerLeft = () => {
             </div>
             <InputBase
               placeholder="Buscar proyecto..."
+              style={{paddingLeft: '45px'}}
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -194,6 +206,7 @@ const DrawerLeft = () => {
       </AppBar>
       <Drawer
         className={`${classes.drawer}`}
+        id="drawer"
         variant="persistent"
         anchor="left"
         open={open}
@@ -201,12 +214,12 @@ const DrawerLeft = () => {
           paper: classes.drawerPaper,
         }}
       >
-        <div className={`${classes.drawerHeader} drawer`}>
+        <div id="drawer" className={`${classes.drawerHeader}`}>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </div>
-        <List>
+        <List id="drawer" className={classes.list} >
           {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
             <ListItem button key={text}>
               <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
