@@ -1,6 +1,7 @@
 import { Typography } from "@material-ui/core"
 import styled from "styled-components"
 import svg from '../assets/profile.svg'
+import TableComponent from "../components/Table/Table"
 
 
 const DashboardPage = () => {
@@ -9,10 +10,9 @@ const DashboardPage = () => {
       <ContentDashboard>
         <div>
           <Typography variant="h5" style={{fontWeight: 'bold'}}>Mis Proyectos</Typography>
-          <Card className="first">
-
-
-          </Card>
+          <CardTable className="first">
+           <TableComponent />
+          </CardTable>
         </div>
         
         <Grid>
@@ -66,9 +66,24 @@ const Card = styled.div`
   margin-top: 10px;
   height: 100%;
   margin: auto;
-  box-shadow: 0px 0px 25px rgba(0,0,0,0.118);
-  border-radius: 25px;
+  box-shadow: 0px 0px 25px rgba(0,0,0,0.418);
+  border-radius: 10px;
   background-color: white;
+  display: flex;
+  align-items: center;
+  
+  @media( max-width: 800px ){
+    .first{
+      min-height: 300px;
+    }
+    min-height: 200px;
+  }
+`
+const CardTable = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  
   @media( max-width: 800px ){
     .first{
       min-height: 300px;

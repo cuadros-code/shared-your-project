@@ -1,8 +1,9 @@
 import { createContext, useReducer } from "react"
 import AuthReducer from "./AuthReducer"
-import { firebase, googleProvider } from '../../config/firebase'
 import { authTypes } from "./authTypesReducer"
 import alertError from "../../components/Alerts/AlertError"
+import { collection } from "../../constants/collectionsFirebase"
+import { firebase, firestore, googleProvider, storage } from '../../config/firebase'
 
 export const AuthContext = createContext()
 
@@ -18,19 +19,33 @@ const AuthState = ({children}) => {
     const [authState, dispatch] = useReducer(AuthReducer, initialState)
 
 		// Register new user
-		const registerNewUser = async ( {fullName, email, password} ) => {
+		const registerNewUser = async ( {fullName, email: userEmail, password} ) => {
 			dispatch({ type: authTypes.InitAction })
-
 			try {
 				const newUser = await firebase
 												.auth()
-												.createUserWithEmailAndPassword( email, password )
+												.createUserWithEmailAndPassword( userEmail, password )
 
 				await newUser.user.updateProfile({
 					displayName: fullName
-				})				
+				})
+
+				const { displayName, email, photoURL, uid } = newUser.user
+				await firestore
+							.collection(collection.users)
+							.doc(newUser.user.uid)
+							.set({
+								displayName,
+								email,
+								photoURL,
+							})
 				
-				dispatch({ type: authTypes.RegisterUser, payload: newUser.user })
+				const dataUser = await userById({uidUser: uid})		
+				dispatch({ 
+					type: authTypes.RegisterUser, 
+					payload: dataUser 
+				})
+
 			} catch (error) {
 				console.log(error)
 				if(error.code === 'auth/email-already-in-use'){
@@ -45,11 +60,30 @@ const AuthState = ({children}) => {
 
 			dispatch({ type: authTypes.InitAction })
 			try {
-				const userLogin = await firebase
+				const userLogin = await 
+													firebase
 												  .auth()
 													.signInWithPopup( googleProvider )
 
-				dispatch({ type: authTypes.RegisterUser, payload: userLogin.user })
+				const { displayName, email, photoURL, uid } = userLogin.user
+				if(await existsUser({uidUser: uid}) === false){
+				 await firestore
+						.collection(collection.users)
+						.doc(userLogin.user.uid)
+						.set({
+							displayName,
+							email,
+							photoURL,
+							uid
+						})
+				}
+
+				const dataUser = await userById({uidUser: uid})
+				dispatch({ 
+					type   : authTypes.RegisterUser, 
+					payload: dataUser
+				})
+
 			} catch (error) {
 				console.log(error)
 				if(error.code === 'auth/account-exists-with-different-credential')
@@ -63,11 +97,18 @@ const AuthState = ({children}) => {
 
 			dispatch({ type: authTypes.InitAction })
 			try {
-				const loginUser = await firebase
+				const loginUser = await 
+													firebase
 													.auth()
 													.signInWithEmailAndPassword(email, password)
-				
-				dispatch({ type: authTypes.LoginUser, payload: loginUser.user })
+
+				const { uid } =  loginUser.user
+				const dataUser = await userById({uidUser: uid})
+				dispatch({ 
+					type   : authTypes.LoginUser, 
+					payload: dataUser
+				})
+
 			} catch (error) {
 				console.log(error)
 				if(error.code === 'auth/wrong-password')
@@ -79,11 +120,77 @@ const AuthState = ({children}) => {
 			}
 		}
 
-		const getCurrentUser = async ( ) => {
+		// update profile data user
+		const updateDataProfile = async ({ uid, dataProfile }) => {
 			try {
-				firebase.auth().onAuthStateChanged( (user) => {
+				
+			  await firestore
+							.collection(collection.users)
+							.doc(uid)
+							.update({
+								...dataProfile
+							})
+
+				const dataUser = await userById({uidUser: uid})
+				dispatch({ 
+					type   : authTypes.LoginUser, 
+					payload: dataUser
+				})
+										
+			} catch (error) {
+				alertError({message: 'Error al actualizar perfil'})
+			}
+		}
+
+		// Get data user by UID
+		const userById = async ( { uidUser } ) => {
+			try {
+				const userData = await firestore
+																.collection(collection.users)
+																.doc(uidUser)
+																.get()
+				return {
+					...userData.data(),
+					uid: userData.id 
+				}
+			} catch (error) {
+				alertError({message: 'Error al autenticar usuario'})
+				dispatch({ type: authTypes.NewError })
+			}
+		}
+
+		// Update image profile
+		const updateAvatar = async ({ image, uid }) => {
+			try {
+				const newRef = storage
+											.ref('images')
+											.child(image.name)
+
+				await newRef.put(image)
+
+				const urlImage = await newRef.getDownloadURL()
+				updateDataProfile({ 
+					uid, 
+					dataProfile : { photoURL: urlImage }
+				})
+
+			} catch (error) {
+				alertError({message: 'Error al subir la imagen'})
+				dispatch({ type: authTypes.NewError })
+			}
+		}
+
+		// On refresh page
+		const getCurrentUser = ( ) => {
+			try {
+				firebase.auth().onAuthStateChanged( async (user) => {
 					if(user){
-						dispatch({ type: authTypes.LoginUser, payload:user })
+						const { uid } = user
+						const dataUser = await userById({uidUser: uid})
+						dispatch({ 
+							type   : authTypes.LoginUser, 
+							payload: dataUser
+						})
 					}else{
 						dispatch({ type: authTypes.LogoutUser })	
 					}
@@ -93,6 +200,20 @@ const AuthState = ({children}) => {
 			}
 		}
 		
+		// Verify if user is register
+		const existsUser = async ({uidUser}) => {
+			try {
+				const userData = await firestore
+																.collection(collection.users)
+																.doc(uidUser)
+																.get()
+				return userData.exists
+			} catch (error) {
+				alertError({message: 'Error al obtener información'})
+			}
+		}
+
+		// Logout user
 		const logoutUser = async () => {
 			try {
 				await firebase.auth().signOut()
@@ -101,16 +222,20 @@ const AuthState = ({children}) => {
 				alertError({message: 'Error al cerrar sesión'})
 			}
 		}
+
+		
 		
     return (
       <AuthContext.Provider
 				value={{
 					authState,
 					logoutUser,
+					updateAvatar,
 					getCurrentUser,
 					registerNewUser,
 					loginWithGoogle,
-					loginWithEmailAndPassword
+					updateDataProfile,
+					loginWithEmailAndPassword,
 				}}
 			>
           {children}

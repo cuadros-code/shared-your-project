@@ -5,8 +5,7 @@ import clsx from 'clsx';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreIcon  from '@material-ui/icons/MoreVert';
 import MenuIcon from '@material-ui/icons/Menu';
-import MailIcon from '@material-ui/icons/Mail';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
+import Add from '@material-ui/icons/Add';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -180,7 +179,7 @@ const DrawerLeft = () => {
                   onClick={handleProfileMenuOpen}
                   color="inherit"
                 >
-                  <Avatar src="http://javadesde0.com/wp-content/uploads/480px-Unofficial_JavaScript_logo_2.svg_.png"  />
+                  <Avatar src={user.photoURL && user.photoURL}  />
                 </IconButton>
               </>
               :
@@ -215,17 +214,19 @@ const DrawerLeft = () => {
         }}
       >
         <div id="drawer" className={`${classes.drawerHeader}`}>
+          <Typography style={{fontWeight: 'bold'}} variant="body1">Shared</Typography>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </div>
         <List id="drawer" className={classes.list} >
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
+            <ListItem 
+              button
+              onClick={() => history.push(routes.createProject)}
+            >
+              <ListItemIcon><Add /></ListItemIcon>
+              <ListItemText primary='Nuevo proyecto' />
             </ListItem>
-          ))}
         </List>
       </Drawer>
       {renderMobileMenu}

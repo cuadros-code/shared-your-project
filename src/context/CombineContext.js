@@ -1,6 +1,7 @@
 import AuthState from './auth/AuthContext'
 import theme from './colorTheme/themeContext'
 import { ThemeProvider } from '@material-ui/core'
+import ProjectState from './project/ProjectContext'
 
 const CombineContext = ( {children} ) => {
 
@@ -8,7 +9,9 @@ const CombineContext = ( {children} ) => {
     <>
       <ThemeProvider theme={theme}>
         <AuthState>
-          { children }        
+          <ProjectState>
+            { children }        
+          </ProjectState>
         </AuthState>
       </ThemeProvider>
     </>
