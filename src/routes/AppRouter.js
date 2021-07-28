@@ -12,6 +12,8 @@ const ProfilePage = lazy(() => import('../pages/ProfilePage'))
 const DashboardPage = lazy(() => import('../pages/DashboardPage'))
 const RegisterPage = lazy(() => import('../pages/RegisterPage'))
 const ResetPasswordPage = lazy(() => import('../pages/ResetPasswordPage'))
+const CreateProject = lazy(() => import('../pages/CreateProject'))
+const UpdateProject = lazy(() => import('../pages/UpdateProject'))
 
 const AppRouter = () => {
 
@@ -62,6 +64,18 @@ const AppRouter = () => {
             path={routes.dashboard}
             isAuth={isAuth}
             component={DashboardPage}
+          />
+          <PrivateRoute
+            exact
+            path={routes.createProject}
+            isAuth={isAuth}
+            component={CreateProject}
+          />
+          <PrivateRoute
+            exact
+            path={routes.updateProject}
+            isAuth={isAuth}
+            component={UpdateProject}
           />
           <Redirect to="home" />
         </Switch>

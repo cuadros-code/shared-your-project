@@ -5,6 +5,8 @@ export const routes = {
   resetPassword: '/reset',
 
   profile  : '/profile',
-  dashboard: '/dashboard',
   home     : '/home',
+  dashboard: '/dashboard',
+  createProject: '/create-project',
+  updateProject: '/update-project/:id',
 }

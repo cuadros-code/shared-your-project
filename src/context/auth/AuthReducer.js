@@ -31,8 +31,7 @@ const AuthReducer = ( state, action ) => {
     case authTypes.NewError:
       return{
         ...state,
-        loading  : false,
-        authError: action.payload,
+        loading  : false
       }
     
     case authTypes.LogoutUser:

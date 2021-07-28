@@ -1,34 +1,72 @@
-import styled from "styled-components"
-import { Button,  FormControlLabel,  Switch,  TextField, Typography } from "@material-ui/core"
+import { useState, useContext, useEffect } from "react"
+import { AuthContext } from "../context/auth/AuthContext"
 import { ContentInput } from "./LoginPage"
 import svg from '../assets/profile.svg'
-import { useForm } from "react-hook-form"
-import { useState } from "react"
+import styled from "styled-components"
+import { Button,  CircularProgress,  FormControlLabel,  Switch,  TextField, Typography } from "@material-ui/core"
+import useForm from "../hooks/useForm"
 
 const ProfilePage = () => {
 
+  const { authState:{ user, loading }, updateDataProfile, updateAvatar } = useContext(AuthContext)
   const [imageAvatar, setImageAvatar] = useState('')
-  const { register, handleSubmit, formState: { errors },  } = useForm()
+  const [image, setImage] = useState(null)
+  const [searchJob, setSearchJob] = useState(false)
 
+  const { valueForm, setValueForm, onChange } = useForm({
+    displayName  : '',
+    age          : '',
+    numberPhone  : '',
+    urlLinkedin  : '',
+    urlRepository: '',
+    urlPage      : ''
+  })
+  const { displayName, 
+          age, 
+          numberPhone, 
+          urlLinkedin, 
+          urlRepository, 
+          urlPage } = valueForm
 
-  const onSubmit = (data) => {
-    console.log(data)
+  const onSubmit = (e) => {
+    e.preventDefault()
+    updateDataProfile({ 
+      uid        : user.uid,
+      dataProfile: {...valueForm, searchJob} 
+    })
+
+    if(image){
+      updateAvatar({ 
+        uid  : user.uid,
+        image: image,
+      })
+    }
+
   }
 
   const onChangeImage = (e) => {
     const file = e.target.files[0]
     if(!file) return
+    setImage(file)
     const objectUrl = URL.createObjectURL(file)
     setImageAvatar(objectUrl)
   }
 
+  useEffect(() => {
+    if(user){
+      setValueForm(user)
+      setSearchJob(user.searchJob || false)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <Container>
       <ContentProfile>
-        <Form onSubmit={ handleSubmit( onSubmit ) }>
+        <Form onSubmit={onSubmit}>
         <Card>
           <ContentAvatar>
-            <ImageAvatar src={imageAvatar ? imageAvatar: 'https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png?w=640'} alt="avatar"/>
+            <ImageAvatar src={imageAvatar ? imageAvatar : user.photoURL} alt="avatar"/>
             <ButtonImage color="primary" variant="outlined">
               <InputImage 
                 onChange={onChangeImage}
@@ -41,7 +79,9 @@ const ProfilePage = () => {
             <TextField 
               label="Nombre completo"
               variant="outlined"
-              {...register('fullName', {required: true}) }
+              name="displayName"
+              value={displayName || ''}
+              onChange={onChange}
               fullWidth
             />
           </ContentInput>
@@ -50,7 +90,9 @@ const ProfilePage = () => {
               label="Edad"
               variant="outlined"
               fullWidth
-              {...register('age') }
+              name="age"
+              value={age || ''}
+              onChange={onChange}
               type="number"
             />
           </ContentInput>
@@ -58,7 +100,9 @@ const ProfilePage = () => {
             <TextField 
               label="Telefono"
               variant="outlined"
-              {...register('numberPhone') }
+              name="numberPhone"
+              value={numberPhone || ''}
+              onChange={onChange}
               type="number"
               fullWidth
             />
@@ -69,9 +113,9 @@ const ProfilePage = () => {
             <FormControlLabel
               control={
               <Switch
-                {...register("showAge")} 
+                checked={searchJob}
+                onChange={() => setSearchJob(!searchJob)}
                 color="primary" 
-                name="searchJob"
               />}
               label="Buscando trabajo"
               labelPlacement="start"
@@ -89,7 +133,9 @@ const ProfilePage = () => {
               <TextField 
                 label="Link linkedin"
                 variant="outlined"
-                {...register('urlLinkedin') }
+                name="urlLinkedin"
+                value={urlLinkedin || ''}
+                onChange={onChange}
                 type="url"
                 fullWidth
               />
@@ -98,7 +144,9 @@ const ProfilePage = () => {
               <TextField 
                 label="Link repositorio"
                 variant="outlined"
-                {...register('urlRepository') }
+                name="urlRepository"
+                value={urlRepository || ''}
+                onChange={onChange}
                 type="url"
                 fullWidth
               />
@@ -107,7 +155,9 @@ const ProfilePage = () => {
               <TextField 
                 label="Link portafolio"
                 variant="outlined"
-                {...register('urlPage') }
+                name="urlPage"
+                value={urlPage || ''}
+                onChange={onChange}
                 type="url"
                 fullWidth
               />
@@ -118,7 +168,7 @@ const ProfilePage = () => {
               fullWidth
               type="submit"
             >
-              Guardar Información
+              { loading ? <CircularProgress color="secondary" />: 'Guardar Información' }
             </Button>
           </Card>
          
@@ -154,7 +204,7 @@ const ContentProfile = styled.div`
   height: auto;
   backdrop-filter: blur(10px);
   box-shadow: 0px 0px 25px rgba(0,0,0,0.198);
-  border-radius: 35px;
+  border-radius: 15px;
   @media( max-width: 1000px ){
     width: 95%;
     height: auto;
@@ -177,7 +227,7 @@ const Form = styled.form`
 
 const Card = styled.div`
   background: white;
-  border-radius: 35px;
+  border-radius: 5px;
   box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
   padding: 15px 50px;
   @media(max-width: 450px){

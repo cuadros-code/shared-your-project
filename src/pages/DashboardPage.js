@@ -1,18 +1,37 @@
-import { Typography } from "@material-ui/core"
+import { useContext, useEffect } from "react"
 import styled from "styled-components"
+import { CircularProgress, Typography } from "@material-ui/core"
 import svg from '../assets/profile.svg'
-
+import TableComponent from "../components/Table/Table"
+import { AuthContext } from "../context/auth/AuthContext"
+import { ProjectContext } from "../context/project/ProjectContext"
 
 const DashboardPage = () => {
+
+  const { projectState: { projectsUser, loading }, getProjectsById } = useContext(ProjectContext)
+  const { authState: { user } } = useContext(AuthContext)
+
+  useEffect(() => {
+    if(user) getProjectsById( user.uid )
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
+
   return (
     <Content>
       <ContentDashboard>
         <div>
           <Typography variant="h5" style={{fontWeight: 'bold'}}>Mis Proyectos</Typography>
-          <Card className="first">
-
-
-          </Card>
+          <CardTable className="first">
+            {
+              loading
+              ?
+                <CircularProgress color="secondary"/>
+              :
+              <TableComponent 
+                projects={ projectsUser }
+              />
+            }
+          </CardTable>
         </div>
         
         <Grid>
@@ -66,9 +85,24 @@ const Card = styled.div`
   margin-top: 10px;
   height: 100%;
   margin: auto;
-  box-shadow: 0px 0px 25px rgba(0,0,0,0.118);
-  border-radius: 25px;
+  box-shadow: 0px 0px 25px rgba(0,0,0,0.418);
+  border-radius: 5px;
   background-color: white;
+  display: flex;
+  align-items: center;
+  
+  @media( max-width: 800px ){
+    .first{
+      min-height: 300px;
+    }
+    min-height: 200px;
+  }
+`
+const CardTable = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  
   @media( max-width: 800px ){
     .first{
       min-height: 300px;
