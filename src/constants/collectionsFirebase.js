@@ -1,4 +1,4 @@
 export const collection = {
-  users: 'users',
-  
+  users   : 'users',
+  projects: 'projects'
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import styled from 'styled-components'
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -77,33 +77,7 @@ function TablePaginationActions(props) {
     </div>
   );
 }
-
-TablePaginationActions.propTypes = {
-  count: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-};
-
-function createData(name, calories, fat) {
-  return { name, calories, fat };
-}
-
-const rows = [
-  createData('Cupcake', 305, 3.7),
-  createData('Donut', 452, 25.0),
-  createData('Eclair', 262, 16.0),
-  createData('Frozen yoghurt', 159, 6.0),
-  createData('Gingerbread', 356, 16.0),
-  createData('Honeycomb', 408, 3.2),
-  createData('Ice cream sandwich', 237, 9.0),
-  createData('Jelly Bean', 375, 0.0),
-  createData('KitKat', 518, 26.0),
-  createData('Lollipop', 392, 0.2),
-  createData('Marshmallow', 318, 0),
-  createData('Nougat', 360, 19.0),
-  createData('Oreo', 437, 18.0),
-].sort((a, b) => (a.calories < b.calories ? -1 : 1));
+// sort((a, b) => (a.calories < b.calories ? -1 : 1));
 
 const useStyles2 = makeStyles({
   table: {
@@ -113,12 +87,12 @@ const useStyles2 = makeStyles({
   },
 });
 
-export default function CustomPaginationActionsTable() {
+ const CustomPaginationActionsTable = ({ projects }) => {
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(7);
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, projects.length - page * rowsPerPage);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -135,32 +109,32 @@ export default function CustomPaginationActionsTable() {
         <TableHead>
          <TableRow style={{background: primary}}>
              <TableCell style={{color: 'white', fontWeight: 'bold'}}>
-                 Dessert (100g serving)
+                Nombre del proyecto
               </TableCell>
              <TableCell style={{color: 'white', fontWeight: 'bold'}}>
-                 Calories
+                Fecha de publicación
               </TableCell>
              <TableCell style={{color: 'white', fontWeight: 'bold'}}>
-                 Fat&nbsp;(g)
+                 Votos
               </TableCell>
            </TableRow>
          </TableHead>
         <TableBody>
           {(rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
-          ).map((row) => (
-            <TableRow key={row.name}>
-              <TableCell component="th" scope="row">
-                {row.name}
+            ? projects.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : projects
+          ).map((project) => (
+            <TableRowHover key={project.id}>
+              <TableCell className="cell" component="th" scope="row">
+                {project.projectName}
               </TableCell>
-              <TableCell >
-                {row.calories}
+              <TableCell className="cell">
+                {project.create}
               </TableCell>
-              <TableCell >
-                {row.fat}
+              <TableCell className="cell">
+                {project.votes}
               </TableCell>
-            </TableRow>
+            </TableRowHover>
           ))}
 
           {emptyRows > 0 && (
@@ -174,7 +148,7 @@ export default function CustomPaginationActionsTable() {
             <TablePagination
               rowsPerPageOptions={[]}
               colSpan={3}
-              count={rows.length}
+              count={projects.length}
               rowsPerPage={rowsPerPage}
               page={page}
               labelDisplayedRows={({ from, to, count }) => `${from} - ${to} de ${count !== -1 && count}`}
@@ -188,3 +162,17 @@ export default function CustomPaginationActionsTable() {
     </TableContainer>
   );
 }
+
+export default CustomPaginationActionsTable
+
+const TableRowHover = styled(TableRow)`
+  
+  :hover {
+    background: ${primary};
+    cursor: pointer;
+    .cell{
+      color: white;
+      font-weight: bold;
+    }
+  }
+`

@@ -66,7 +66,7 @@ const LoginPage = () => {
                 type="submit"
                 disabled={ loading }
               >
-                { loading ? <CircularProgress />: 'Iniciar sesión' }
+                { loading ? <CircularProgress color="secondary" />: 'Iniciar sesión' }
               </Button>
             </ContentInput>
             <ContentInput>

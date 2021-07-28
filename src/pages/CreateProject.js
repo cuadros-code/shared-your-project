@@ -1,15 +1,35 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import styled from 'styled-components'
 import svg from '../assets/profile.svg'
 import placeholder from '../assets/placeholder.png'
 import { ContentInput } from './LoginPage'
-import { Button, TextField, Typography } from '@material-ui/core'
+import { Button, CircularProgress, TextField, Typography } from '@material-ui/core'
+import { ProjectContext } from '../context/project/ProjectContext'
+import useForm from '../hooks/useForm'
+import { AuthContext } from '../context/auth/AuthContext'
 
 
 const CreateProject = () => {
 
+  const { projectState: { loading }, createProject } = useContext(ProjectContext)
+  const { authState: { user } } = useContext(AuthContext)
+
   const [imageAvatar, setImageAvatar] = useState('')
   const [image, setImage] = useState(null)
+
+  const { valueForm, onChange, setValueForm } = useForm({
+    projectName       : '',
+    projectLink       : '',
+    projectRepository : '',
+    projectDescription: '',
+  })
+
+  const {
+    projectName,
+    projectLink,
+    projectRepository,
+    projectDescription
+  } = valueForm
 
   const onChangeImage = (e) => {
     const file = e.target.files[0]
@@ -19,10 +39,23 @@ const CreateProject = () => {
     setImageAvatar(objectUrl)
   }
 
+  const onSubmit = (e) => {
+    e.preventDefault()
+    const projectData = {
+      image,
+      ...valueForm
+    }
+    createProject({
+      projectData,
+      userId: user.uid
+    })
+  }
+
+
   return (
     <Content>
       <ContentForm>
-        <Form>
+        <Form onSubmit={onSubmit}>
           <Typography
             variant="h5" 
             className="title" 
@@ -46,6 +79,9 @@ const CreateProject = () => {
             <TextField 
               fullWidth
               label="Nombre del proyecto"
+              name="projectName"
+              onChange={onChange}
+              value={projectName}
               variant="outlined"
               type="text"
             />
@@ -54,6 +90,9 @@ const CreateProject = () => {
             <TextField 
               fullWidth
               label="Link del repositorio"
+              name="projectRepository"
+              onChange={onChange}
+              value={projectRepository}
               variant="outlined"
               type="url"
             />
@@ -62,6 +101,9 @@ const CreateProject = () => {
             <TextField 
               fullWidth
               label="Link del proyecto"
+              name="projectLink"
+              onChange={onChange}
+              value={projectLink}
               variant="outlined"
               type="url"
             />
@@ -70,7 +112,11 @@ const CreateProject = () => {
             <TextField 
               multiline
               fullWidth
+              rows="3"
               label="Descripción del proyecto"
+              name="projectDescription"
+              onChange={onChange}
+              value={projectDescription}
               variant="outlined"
               type="text"
             />
@@ -80,8 +126,9 @@ const CreateProject = () => {
             color="primary"
             variant="contained"
             fullWidth
+            type="submit"
           >
-            Publicar proyecto
+            { loading ? <CircularProgress color="secondary" />: 'Publicar proyecto' }
           </Button>
 
         </Form>
@@ -111,9 +158,10 @@ const ContentForm = styled.div`
   padding: 10px 40px 40px 40px;
   margin: 30px 0px 30px 0px;
   height: auto;
-  backdrop-filter: blur(50px);
+  max-width: 800px;
+  backdrop-filter: blur(60px);
   box-shadow: 0px 0px 25px rgba(0,0,0,0.198);
-  border-radius: 35px;
+  border-radius: 10px;
   @media( max-width: 1000px ){
     width: 95%;
     height: auto;

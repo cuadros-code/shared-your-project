@@ -3,12 +3,12 @@ import { AuthContext } from "../context/auth/AuthContext"
 import { ContentInput } from "./LoginPage"
 import svg from '../assets/profile.svg'
 import styled from "styled-components"
-import { Button,  FormControlLabel,  Switch,  TextField, Typography } from "@material-ui/core"
+import { Button,  CircularProgress,  FormControlLabel,  Switch,  TextField, Typography } from "@material-ui/core"
 import useForm from "../hooks/useForm"
 
 const ProfilePage = () => {
 
-  const { authState:{ user }, updateDataProfile, updateAvatar } = useContext(AuthContext)
+  const { authState:{ user, loading }, updateDataProfile, updateAvatar } = useContext(AuthContext)
   const [imageAvatar, setImageAvatar] = useState('')
   const [image, setImage] = useState(null)
   const [searchJob, setSearchJob] = useState(false)
@@ -168,7 +168,7 @@ const ProfilePage = () => {
               fullWidth
               type="submit"
             >
-              Guardar Información
+              { loading ? <CircularProgress color="secondary" />: 'Guardar Información' }
             </Button>
           </Card>
          
@@ -204,7 +204,7 @@ const ContentProfile = styled.div`
   height: auto;
   backdrop-filter: blur(10px);
   box-shadow: 0px 0px 25px rgba(0,0,0,0.198);
-  border-radius: 35px;
+  border-radius: 15px;
   @media( max-width: 1000px ){
     width: 95%;
     height: auto;
@@ -227,7 +227,7 @@ const Form = styled.form`
 
 const Card = styled.div`
   background: white;
-  border-radius: 35px;
+  border-radius: 5px;
   box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
   padding: 15px 50px;
   @media(max-width: 450px){

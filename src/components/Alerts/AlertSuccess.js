@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify'
 
-const alertError = ({message}) => 
-  toast.error(message, 
+const alertSuccess = ({message}) => 
+  toast.success(message, 
     {
       position: "top-right",
       autoClose: 4000,
@@ -13,5 +13,4 @@ const alertError = ({message}) =>
     }
 )
 
-
-export default alertError
+export default alertSuccess

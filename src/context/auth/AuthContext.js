@@ -4,6 +4,7 @@ import { authTypes } from "./authTypesReducer"
 import alertError from "../../components/Alerts/AlertError"
 import { collection } from "../../constants/collectionsFirebase"
 import { firebase, firestore, googleProvider, storage } from '../../config/firebase'
+import alertSuccess from "../../components/Alerts/AlertSuccess"
 
 export const AuthContext = createContext()
 
@@ -122,8 +123,9 @@ const AuthState = ({children}) => {
 
 		// update profile data user
 		const updateDataProfile = async ({ uid, dataProfile }) => {
+
+			dispatch({ type: authTypes.InitAction })
 			try {
-				
 			  await firestore
 							.collection(collection.users)
 							.doc(uid)
@@ -136,7 +138,7 @@ const AuthState = ({children}) => {
 					type   : authTypes.LoginUser, 
 					payload: dataUser
 				})
-										
+				alertSuccess({message: 'Perfil 👍'})
 			} catch (error) {
 				alertError({message: 'Error al actualizar perfil'})
 			}
@@ -165,7 +167,6 @@ const AuthState = ({children}) => {
 				const newRef = storage
 											.ref('images')
 											.child(image.name)
-
 				await newRef.put(image)
 
 				const urlImage = await newRef.getDownloadURL()

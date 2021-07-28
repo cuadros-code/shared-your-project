@@ -5,6 +5,7 @@ import PublicRoute from './PublicRoute'
 import { AuthContext } from '../context/auth/AuthContext'
 import PrivateRoute from './PrivateRoute'
 import DrawerLeft from '../components/Drawer/Drawer'
+import { ProjectContext } from '../context/project/ProjectContext'
 
 const HomePage = lazy(() => import('../pages/HomePage'))
 const LoginPage = lazy(() => import('../pages/LoginPage'))
