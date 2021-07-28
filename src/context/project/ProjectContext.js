@@ -11,15 +11,16 @@ export const ProjectContext = createContext()
 const ProjectState = ({children}) => {
 
   const initialState = {
-    projectsUser : [],
-    loading		   : false,
-    projectError : false,
+    projectsUser     : [],
+    loading		       : false,
+    projectError     : false,
+    activateMyProject: null,
   }
 
   const [ projectState, dispatch] = useReducer(ProjectReducer, initialState)
 
   // Create a New Project
-  const createProject = async ({ projectData, userId }) => {
+  const createProject = async ( projectData, userId ) => {
     
     dispatch({type: projectTypes.InitAction})
     try {
@@ -36,6 +37,7 @@ const ProjectState = ({children}) => {
                                   ...projectData,
                                   image: urlImage,
                                   userId,
+                                  visible: true,
                                   votes: 0,
                                   create: new Date().getTime()
                                 })
@@ -47,7 +49,7 @@ const ProjectState = ({children}) => {
           image: urlImage,
           ...projectData
         }
-      })
+      })    
       alertSuccess({message: 'Proyecto publicado'})
     } catch (error) {
       console.log(error);
@@ -57,7 +59,7 @@ const ProjectState = ({children}) => {
   }
 
   // Get All Projects By User
-  const getProjectsById = async ({ userId }) => {
+  const getProjectsById = async ( userId ) => {
 
     dispatch({type: projectTypes.InitAction})
     try {
@@ -67,7 +69,6 @@ const ProjectState = ({children}) => {
                             .get()
 
       let projectArray = []
-
       if( !projectsUser.empty ){
         projectsUser.forEach( (project) => {
           projectArray.push({
@@ -86,14 +87,46 @@ const ProjectState = ({children}) => {
       dispatch({type: projectTypes.ProjectError})
     }
   }
+
+  // Delete a Project
+  const deleteProject = async ( idProject ) => {
+
+    dispatch({type: projectTypes.InitAction})
+    try {
+      await firestore
+            .collection(collection.projects)
+            .doc(idProject)
+            .delete()
+
+      dispatch({
+        type   : projectTypes.DeleteProject,
+        payload: idProject
+      })
+      
+    } catch (error) {
+      alertError({message: 'Error al eliminar proyecto.'})
+      dispatch({type: projectTypes.ProjectError})
+    }
+  }
+
+  // On Select Project In Table
+  const seeMyProject = ( idProject ) => {
+    dispatch({
+      type   : projectTypes.ActivateMyProject,
+      payload: idProject
+    })
+  }
+
   
-  
+
   return (
     <ProjectContext.Provider
       value={{
         projectState,
         createProject,
         getProjectsById,
+        seeMyProject,
+        deleteProject,
       }}
     >
       {children}

@@ -7,7 +7,10 @@ const CreateProject = () => {
   return (
     <Content>
       <ContentForm>
-        <FormCreateProject/>        
+        <FormCreateProject
+          title="Actualizar Proyecto"
+          update
+        />        
       </ContentForm>
     </Content>
   )

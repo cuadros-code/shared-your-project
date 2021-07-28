@@ -5,7 +5,6 @@ import PublicRoute from './PublicRoute'
 import { AuthContext } from '../context/auth/AuthContext'
 import PrivateRoute from './PrivateRoute'
 import DrawerLeft from '../components/Drawer/Drawer'
-import { ProjectContext } from '../context/project/ProjectContext'
 
 const HomePage = lazy(() => import('../pages/HomePage'))
 const LoginPage = lazy(() => import('../pages/LoginPage'))
@@ -14,6 +13,7 @@ const DashboardPage = lazy(() => import('../pages/DashboardPage'))
 const RegisterPage = lazy(() => import('../pages/RegisterPage'))
 const ResetPasswordPage = lazy(() => import('../pages/ResetPasswordPage'))
 const CreateProject = lazy(() => import('../pages/CreateProject'))
+const UpdateProject = lazy(() => import('../pages/UpdateProject'))
 
 const AppRouter = () => {
 
@@ -70,6 +70,12 @@ const AppRouter = () => {
             path={routes.createProject}
             isAuth={isAuth}
             component={CreateProject}
+          />
+          <PrivateRoute
+            exact
+            path={routes.updateProject}
+            isAuth={isAuth}
+            component={UpdateProject}
           />
           <Redirect to="home" />
         </Switch>

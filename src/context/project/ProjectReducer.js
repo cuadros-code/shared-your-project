@@ -2,9 +2,10 @@ import { projectTypes } from "./projectTypesReducer"
 
 const ProjectReducer = (state, action) => {
   
-  // projectsUser: null,
-  // loading		: false,
-  // projectError : false,
+  // projectsUser     : null,
+  // loading		      : false,
+  // projectError     : false,
+  // activateMyProject: {}
 
   switch (action.type) {
     
@@ -24,9 +25,20 @@ const ProjectReducer = (state, action) => {
     case projectTypes.GetProjectsByUser:
       return {
         ...state,
+        loading		  : false,
+        projectError: false,
         projectsUser: action.payload,
-        loading		: false,
-        projectError : false,
+      }
+    case projectTypes.ActivateMyProject:
+      return {
+        ...state,
+        activateMyProject: ( action.payload ? state.projectsUser.find( (project) => project.id === action.payload ) : {}),
+      }
+    case projectTypes.DeleteProject:
+      return {
+        ...state,
+        loading     : false,
+        projectsUser: state.projectsUser.filter( (project) => project.id !== action.payload )
       }
     case projectTypes.ProjectError:
       return {

@@ -7,5 +7,6 @@ export const routes = {
   profile  : '/profile',
   home     : '/home',
   dashboard: '/dashboard',
-  createProject: '/create-roject',
+  createProject: '/create-project',
+  updateProject: '/update-project/:id',
 }

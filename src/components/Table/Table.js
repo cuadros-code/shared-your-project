@@ -1,4 +1,4 @@
-import React from 'react';
+import { useContext, useState } from 'react';
 import styled from 'styled-components'
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -16,6 +16,9 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import { TableHead } from '@material-ui/core';
 import { primary } from '../../config/colors';
+import { ProjectContext } from '../../context/project/ProjectContext';
+import { useHistory } from 'react-router-dom';
+import { routes } from '../../constants/routes';
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -27,7 +30,7 @@ const useStyles1 = makeStyles((theme) => ({
   }
 }));
 
-function TablePaginationActions(props) {
+const TablePaginationActions = (props) => {
   const classes = useStyles1();
   const theme = useTheme();
   const { count, page, rowsPerPage, onPageChange } = props;
@@ -88,20 +91,21 @@ const useStyles2 = makeStyles({
 });
 
  const CustomPaginationActionsTable = ({ projects }) => {
-  const classes = useStyles2();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(7);
-
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, projects.length - page * rowsPerPage);
+  
+  const history = useHistory()
+  const classes = useStyles2()
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(7)
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, projects.length - page * rowsPerPage)
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-  };
+  }
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
+  }
 
   return (
     <TableContainer style={{boxShadow: '0px 0px 25px rgba(0,0,0,0.418)'}} component={Paper}>
@@ -124,7 +128,12 @@ const useStyles2 = makeStyles({
             ? projects.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : projects
           ).map((project) => (
-            <TableRowHover key={project.id}>
+            <TableRowHover 
+              key={project.id}
+              onClick={() => {
+                history.push(`/update-project/${project.id}`)
+              }}
+            >
               <TableCell className="cell" component="th" scope="row">
                 {project.projectName}
               </TableCell>

@@ -12,7 +12,7 @@ const DashboardPage = () => {
   const { authState: { user } } = useContext(AuthContext)
 
   useEffect(() => {
-    if(user) getProjectsById({userId: user.uid})
+    if(user) getProjectsById( user.uid )
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
