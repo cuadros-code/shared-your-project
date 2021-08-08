@@ -11,6 +11,7 @@ export const ProjectContext = createContext()
 const ProjectState = ({children}) => {
 
   const initialState = {
+    lastProjects     : [],
     projectsUser     : [],
     loading		       : false,
     projectError     : false,
@@ -63,25 +64,24 @@ const ProjectState = ({children}) => {
 
     dispatch({type: projectTypes.InitAction})
     try {
-      const projectsUser = await firestore
-                            .collection(collection.projects)
-                            .where('userId', '==', userId)
-                            .get()
 
-      let projectArray = []
-      if( !projectsUser.empty ){
-        projectsUser.forEach( (project) => {
+      firestore.collection(collection.projects)
+      .where('userId', '==', userId).onSnapshot( (querySnap) => {
+
+        let projectArray = []
+        
+        querySnap.forEach( (project) => {
           projectArray.push({
             id: project.id,
             ...project.data()
           })
         })
-      }
-      
-      dispatch({
-        type: projectTypes.GetProjectsByUser,
-        payload: projectArray
+        dispatch({
+          type: projectTypes.GetProjectsByUser,
+          payload: projectArray
+        })
       })
+      
 
     } catch (error) {
       dispatch({type: projectTypes.ProjectError})
@@ -117,6 +117,40 @@ const ProjectState = ({children}) => {
     })
   }
 
+  // Get Last Projects
+  const getLastProjects = async () => {    
+    try {
+      
+      firestore
+      .collection(collection.projects)
+      .where('visible', '==', true)
+      .orderBy('create')
+      .limit(20)
+      .onSnapshot( (querySnap) => {
+        
+        let projects = []
+
+        querySnap.docs.forEach( project =>  {
+          projects.push({
+            id: project.id,
+            ...project.data()
+          })
+        })
+
+        dispatch({
+          type: projectTypes.GetLastProjects,
+          payload: projects
+        })
+
+      })
+
+
+    } catch (error) {
+      console.log(error)
+      alertError({message: ''})
+      dispatch({type: projectTypes.ProjectError})
+    }
+  }
   
 
   return (
@@ -127,6 +161,7 @@ const ProjectState = ({children}) => {
         getProjectsById,
         seeMyProject,
         deleteProject,
+        getLastProjects
       }}
     >
       {children}
