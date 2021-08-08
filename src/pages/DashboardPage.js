@@ -1,13 +1,16 @@
 import { useContext, useEffect } from "react"
 import styled from "styled-components"
-import { CircularProgress, Typography } from "@material-ui/core"
+import { Button, CircularProgress, Typography } from "@material-ui/core"
 import svg from '../assets/profile.svg'
 import TableComponent from "../components/Table/Table"
 import { AuthContext } from "../context/auth/AuthContext"
 import { ProjectContext } from "../context/project/ProjectContext"
+import emptyProject from '../assets/empty.svg'
+import { useHistory } from "react-router"
 
 const DashboardPage = () => {
 
+  const history = useHistory()
   const { projectState: { projectsUser, loading }, getProjectsById } = useContext(ProjectContext)
   const { authState: { user } } = useContext(AuthContext)
 
@@ -27,9 +30,23 @@ const DashboardPage = () => {
               ?
                 <CircularProgress color="secondary"/>
               :
+              projectsUser.length > 0
+              ?
               <TableComponent 
                 projects={ projectsUser }
               />
+              :
+              <div style={{position: 'relative'}}>
+                <ImageEmpty src={emptyProject} alt="sin publicar" />
+                <AddProject
+                  color="primary"
+                  variant="outlined"
+                  onClick={ () => history.push('/create-project') }
+                >
+                  Agregar proyecto
+                </AddProject>
+              </div>
+            
             }
           </CardTable>
         </div>
@@ -80,6 +97,18 @@ const ContentDashboard = styled.div`
     padding: 10px 0px 20px 0px;
   }
 `
+
+const ImageEmpty = styled.img`
+  width: 500px;
+`
+const AddProject = styled(Button)`
+  position: absolute;
+  width: 150px;
+  height: 50px;
+  left: 52%;
+  top: 50%;
+`
+
 const Card = styled.div`
   width: 100%;
   margin-top: 10px;

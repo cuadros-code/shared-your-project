@@ -16,6 +16,7 @@ const ProjectState = ({children}) => {
     loading		       : false,
     projectError     : false,
     activateMyProject: null,
+    limitLastProjects: 10,
   }
 
   const [ projectState, dispatch] = useReducer(ProjectReducer, initialState)
@@ -40,6 +41,7 @@ const ProjectState = ({children}) => {
                                   userId,
                                   visible: true,
                                   votes: 0,
+                                  user_votes: [],
                                   create: new Date().getTime()
                                 })
 
@@ -66,8 +68,9 @@ const ProjectState = ({children}) => {
     try {
 
       firestore.collection(collection.projects)
-      .where('userId', '==', userId).onSnapshot( (querySnap) => {
-
+      .where('userId', '==', userId)
+      .orderBy('create')
+      .onSnapshot( (querySnap) => {
         let projectArray = []
         
         querySnap.forEach( (project) => {
@@ -89,18 +92,18 @@ const ProjectState = ({children}) => {
   }
 
   // Delete a Project
-  const deleteProject = async ( idProject ) => {
+  const deleteProject = async ( projectId ) => {
 
     dispatch({type: projectTypes.InitAction})
     try {
       await firestore
             .collection(collection.projects)
-            .doc(idProject)
+            .doc(projectId)
             .delete()
 
       dispatch({
         type   : projectTypes.DeleteProject,
-        payload: idProject
+        payload: projectId
       })
       
     } catch (error) {
@@ -110,10 +113,10 @@ const ProjectState = ({children}) => {
   }
 
   // On Select Project In Table
-  const seeMyProject = ( idProject ) => {
+  const seeMyProject = ( projectId ) => {
     dispatch({
       type   : projectTypes.ActivateMyProject,
-      payload: idProject
+      payload: projectId
     })
   }
 
@@ -124,8 +127,8 @@ const ProjectState = ({children}) => {
       firestore
       .collection(collection.projects)
       .where('visible', '==', true)
-      .orderBy('create')
-      .limit(20)
+      .orderBy('votes', 'desc')
+      .limit(projectState.limitLastProjects)
       .onSnapshot( (querySnap) => {
         
         let projects = []
@@ -151,6 +154,23 @@ const ProjectState = ({children}) => {
       dispatch({type: projectTypes.ProjectError})
     }
   }
+
+  // When user voted a product
+  const addVote = async ( projectId , votes , numberVotes, removeVote = false ) => {
+    try {
+
+      await firestore.collection(collection.projects)
+                      .doc(projectId)
+                      .update({
+                        votes: (removeVote) ? numberVotes - 1 : numberVotes + 1,
+                        user_votes: votes
+                      })
+    } catch (error) {
+      console.log(error)
+      alertError({message: 'Error al registrar voto.'})
+      dispatch({type: projectTypes.ProjectError})
+    }
+  }
   
 
   return (
@@ -161,7 +181,8 @@ const ProjectState = ({children}) => {
         getProjectsById,
         seeMyProject,
         deleteProject,
-        getLastProjects
+        getLastProjects,
+        addVote
       }}
     >
       {children}

@@ -1,4 +1,5 @@
 export const collection = {
   users   : 'users',
-  projects: 'projects'
+  projects: 'projects',
+  user_votes: 'user_votes'
 }

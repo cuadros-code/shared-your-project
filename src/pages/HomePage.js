@@ -27,7 +27,14 @@ const HomePage = () => {
         </div>
 
         <div>
-
+          <h2>Últimas noticias</h2>
+          <ContainerCard >
+            {
+              lastProjects.map(item => (
+                <CardProject project={item} key={item.id} />
+                ))
+            }
+          </ContainerCard>
         </div>
       </Content>      
     </Container>
@@ -37,12 +44,21 @@ const HomePage = () => {
 export default HomePage
 
 const Container = styled.div`
-  padding: 20px 140px;
+  padding: 20px 120px;
+  @media( max-width: 1150px ){
+    padding: 20px 70px;
+  }
+  @media( max-width: 850px ){
+    padding: 20px 30px;
+  }
 `
 const Content = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr;
   column-gap: 20px;
+  @media( max-width: 650px ){
+    grid-template-columns: 1fr;
+  }
 `
 const ContainerCard = styled.div`
   box-shadow: 0px 0px 15px rgba(0,0,0,0.1);

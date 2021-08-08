@@ -1,7 +1,28 @@
+import { useContext } from "react";
 import styled from "styled-components"
 import HowToVoteIcon from '@material-ui/icons/HowToVote';
+import { ProjectContext } from "../../context/project/ProjectContext";
+import { AuthContext } from "../../context/auth/AuthContext";
+import { useHistory } from "react-router-dom";
 
 const CardProject = ({project}) => {
+
+  const history = useHistory()
+  const { addVote } = useContext(ProjectContext)
+  const { authState:{ user } } = useContext(AuthContext)
+
+  const onAddVote = () => {
+    if(!user) return history.push('login')
+
+    if(project.user_votes.includes(user.uid)){
+      const votes = project.user_votes.filter( userId => userId !== user.uid )
+      addVote(project.id, votes, project.votes, true )
+      return;
+    }
+    const votes = [...project.user_votes, user.uid] 
+    addVote(project.id, votes, project.votes )
+  }
+
   return (
     <CardContent>
       <LayoutCard>
@@ -12,10 +33,14 @@ const CardProject = ({project}) => {
 
         </CardInfo>
 
-        <ButtonVotes>
+        <ButtonVotes
+          hasVoted={project.user_votes.includes(user?.uid)}
+          onClick={onAddVote}
+        >
           <HowToVoteIcon />
           {project.votes}
         </ButtonVotes>
+
       </LayoutCard>
     </CardContent>
   )
@@ -79,14 +104,22 @@ const ButtonVotes = styled.button`
   justify-content: space-evenly;
   align-items: center;
   flex-direction: column;
+  border-radius: 5px;
   border-width: 1px;
   border-style: solid;
-  border-color: #e1e1e1;
+  border-color: ${ props => props.hasVoted ? '#e3555d' : '#e1e1e1'};
   cursor: pointer;
   font-size: 1rem;
   background-color: white;
+  transition: ease 0.18s;
+  color: ${ props => props.hasVoted ? '#e3555d' : 'black'};
 
   :hover{
     background-color: whitesmoke;
   }
+
+  :active{
+    background-color: #d6ede6;
+  }
+
 `
