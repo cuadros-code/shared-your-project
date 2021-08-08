@@ -26,7 +26,7 @@ const AppRouter = () => {
 
   return (
     <Router>
-      <Suspense fallback={<p>Loading...</p>} >
+      <Suspense fallback={null} >
         <DrawerLeft />
         <Switch>
 

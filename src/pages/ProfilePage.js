@@ -66,7 +66,7 @@ const ProfilePage = () => {
         <Form onSubmit={onSubmit}>
         <Card>
           <ContentAvatar>
-            <ImageAvatar src={imageAvatar ? imageAvatar : user.photoURL} alt="avatar"/>
+            <ImageAvatar loading="lazy" src={imageAvatar ? imageAvatar : user.photoURL} alt="avatar"/>
             <ButtonImage color="primary" variant="outlined">
               <InputImage 
                 onChange={onChangeImage}
