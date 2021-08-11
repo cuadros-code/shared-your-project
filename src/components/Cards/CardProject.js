@@ -1,14 +1,16 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components"
 import HowToVoteIcon from '@material-ui/icons/HowToVote';
 import { ProjectContext } from "../../context/project/ProjectContext";
 import { AuthContext } from "../../context/auth/AuthContext";
 import { useHistory } from "react-router-dom";
+import ProductDetail from "../Modals/ProductDetail";
 
 const CardProject = ({project}) => {
 
   const history = useHistory()
   const { addVote } = useContext(ProjectContext)
+  const [modal, setModal] = useState(false)
   const { authState:{ user } } = useContext(AuthContext)
 
   const onAddVote = () => {
@@ -24,25 +26,32 @@ const CardProject = ({project}) => {
   }
 
   return (
-    <CardContent>
-      <LayoutCard>
-        <CardImage loading="lazy" src={project.image} alt={project.projectName} />
-        <CardInfo style={{ flex: 1 }}>
-          <h3>{project.projectName}</h3>
-          <p>{project.projectDescription}</p>
+    <>
+      <CardContent
+        onClick={() => setModal(true)}
+      >
+        <LayoutCard>
+          <CardImage loading="lazy" src={project.image} alt={project.projectName} />
+          <CardInfo style={{ flex: 1 }}>
+            <h3>{project.projectName}</h3>
+            <p>{project.projectDescription}</p>
 
-        </CardInfo>
+          </CardInfo>
 
-        <ButtonVotes
-          hasVoted={project.user_votes.includes(user?.uid)}
-          onClick={onAddVote}
-        >
-          <HowToVoteIcon />
-          {project.votes}
-        </ButtonVotes>
-
-      </LayoutCard>
-    </CardContent>
+          <ButtonVotes
+            hasVoted={project.user_votes.includes(user?.uid)}
+            onClick={onAddVote}
+          >
+            <HowToVoteIcon />
+            {project.votes}
+          </ButtonVotes>
+        </LayoutCard>
+      </CardContent>
+      <ProductDetail 
+        isOpen={ modal }
+        setModal={setModal}
+      />
+    </>
   )
 }
 

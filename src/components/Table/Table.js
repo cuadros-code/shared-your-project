@@ -19,6 +19,7 @@ import { primary } from '../../config/colors';
 import { ProjectContext } from '../../context/project/ProjectContext';
 import { useHistory } from 'react-router-dom';
 import { routes } from '../../constants/routes';
+import { formatDate } from '../../helpers/formatDate';
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -138,7 +139,7 @@ const useStyles2 = makeStyles({
                 {project.projectName}
               </TableCell>
               <TableCell className="cell">
-                {project.create}
+                {formatDate( project.create )}
               </TableCell>
               <TableCell className="cell">
                 {project.votes}

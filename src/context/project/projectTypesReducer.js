@@ -7,4 +7,6 @@ export const projectTypes = {
   DeleteProject    : 'Delete_Project',
   GetProject       : 'Get_Project',
   GetLastProjects  : 'Get_Last_Projects',
+  SeeProject       : 'See_Project',
+  CleanSeeProject  : 'Clean_See_Project',
 }

@@ -16,6 +16,7 @@ const ProjectState = ({children}) => {
     loading		       : false,
     projectError     : false,
     activateMyProject: null,
+    seeProject       : null,
     limitLastProjects: 10,
   }
 
@@ -171,6 +172,38 @@ const ProjectState = ({children}) => {
       dispatch({type: projectTypes.ProjectError})
     }
   }
+
+  // When user cliked on project 
+  const activatedProject = async ( projectId ) => {
+
+    dispatch({type: projectTypes.InitAction})
+    try {
+      firestore
+        .collection(collection.projects)
+        .doc(projectId)
+        .onSnapshot((querySnap) => {
+          
+          let project = {
+            id: querySnap.id,
+            ...querySnap.data()
+          }
+
+         dispatch({
+           type: projectTypes.SeeProject,
+           payload: project
+         })
+        })
+
+    } catch (error) {
+      console.log(error)
+      alertError({message: 'Error al obtener información'})
+    }
+  }
+
+  // When use closed modal
+  const cleanActivatedProject = () => {
+    dispatch({ type: projectTypes.CleanSeeProject })
+  }
   
 
   return (
@@ -182,7 +215,9 @@ const ProjectState = ({children}) => {
         seeMyProject,
         deleteProject,
         getLastProjects,
-        addVote
+        addVote,
+        activatedProject,
+        cleanActivatedProject
       }}
     >
       {children}
