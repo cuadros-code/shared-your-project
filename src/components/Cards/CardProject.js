@@ -27,10 +27,10 @@ const CardProject = ({project}) => {
 
   return (
     <>
-      <CardContent
-        onClick={() => setModal(true)}
-      >
-        <LayoutCard>
+      <CardContent>
+        <LayoutCard
+          onClick={() => setModal(true)}
+        >
           <CardImage loading="lazy" src={project.image} alt={project.projectName} />
           <CardInfo style={{ flex: 1 }}>
             <h3>{project.projectName}</h3>
@@ -38,18 +38,18 @@ const CardProject = ({project}) => {
 
           </CardInfo>
 
-          <ButtonVotes
-            hasVoted={project.user_votes.includes(user?.uid)}
-            onClick={onAddVote}
-          >
-            <HowToVoteIcon />
-            {project.votes}
-          </ButtonVotes>
         </LayoutCard>
+        <ButtonVotes
+          hasVoted={project.user_votes.includes(user?.uid)}
+          onClick={onAddVote}
+        >
+          <HowToVoteIcon />
+          {project.votes}
+        </ButtonVotes>
       </CardContent>
       <ProductDetail 
         isOpen={ modal }
-        setModal={setModal}
+        setModal={ setModal }
       />
     </>
   )

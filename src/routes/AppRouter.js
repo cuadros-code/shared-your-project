@@ -1,19 +1,21 @@
 import { lazy, Suspense, useContext, useEffect } from 'react'
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
-import { routes } from '../constants/routes'
-import PublicRoute from './PublicRoute'
-import { AuthContext } from '../context/auth/AuthContext'
-import PrivateRoute from './PrivateRoute'
-import DrawerLeft from '../components/Drawer/Drawer'
 
-const HomePage = lazy(() => import('../pages/HomePage'))
-const LoginPage = lazy(() => import('../pages/LoginPage'))
-const ProfilePage = lazy(() => import('../pages/ProfilePage'))
-const DashboardPage = lazy(() => import('../pages/DashboardPage'))
-const RegisterPage = lazy(() => import('../pages/RegisterPage'))
-const ResetPasswordPage = lazy(() => import('../pages/ResetPasswordPage'))
-const CreateProject = lazy(() => import('../pages/CreateProject'))
-const UpdateProject = lazy(() => import('../pages/UpdateProject'))
+import DrawerLeft from 'components/Drawer/Drawer'
+import { routes } from 'constants/routes'
+import { AuthContext } from 'context/auth/AuthContext'
+
+import PublicRoute from './PublicRoute'
+import PrivateRoute from './PrivateRoute'
+
+const HomePage = lazy(() => import('pages/HomePage'))
+const LoginPage = lazy(() => import('pages/LoginPage'))
+const ProfilePage = lazy(() => import('pages/ProfilePage'))
+const RegisterPage = lazy(() => import('pages/RegisterPage'))
+const CreateProject = lazy(() => import('pages/CreateProject'))
+const UpdateProject = lazy(() => import('pages/UpdateProject'))
+const DashboardPage = lazy(() => import('pages/DashboardPage'))
+const ResetPasswordPage = lazy(() => import('pages/ResetPasswordPage'))
 
 const AppRouter = () => {
 

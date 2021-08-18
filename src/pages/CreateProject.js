@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import svg from '../assets/profile.svg'
-import FormCreateProject from '../components/Form/FormCreateProject'
+import svg from 'assets/profile.svg'
+import FormCreateProject from 'components/Form/FormCreateProject'
 
 const CreateProject = () => {
   

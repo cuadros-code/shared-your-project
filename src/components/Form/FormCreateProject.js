@@ -7,8 +7,13 @@ import { AuthContext } from '../../context/auth/AuthContext'
 import { ProjectContext } from '../../context/project/ProjectContext'
 import { Button, CircularProgress, FormControlLabel, Switch, TextField, Typography } from '@material-ui/core'
 import { useParams } from 'react-router-dom'
+import {useDropzone} from 'react-dropzone';
 
 const FormCreateProject = ({title = 'Publicar nuevo proyecto', update = false}) => {
+
+  const {acceptedFiles, getRootProps, getInputProps} = useDropzone({
+    maxFiles: 3
+  });
 
   const { id } = useParams()
   const { projectState: { loading, activateMyProject }, 
@@ -78,6 +83,12 @@ const FormCreateProject = ({title = 'Publicar nuevo proyecto', update = false}) 
     deleteProject(id)
   }
 
+  const files = acceptedFiles.map(file => (
+    <li key={file.path}>
+      {file.path} - {file.size} bytes
+    </li>
+  ));
+
   return (
     <>
      <Form onSubmit={onSubmit}>
@@ -89,7 +100,7 @@ const FormCreateProject = ({title = 'Publicar nuevo proyecto', update = false}) 
             {title}
           </Typography>
 
-          <ContentAvatar>
+          {/* <ContentAvatar>
             <ImageAvatar src={imageAvatar ? imageAvatar: placeholder} alt="avatar"/>
             <ButtonImage color="primary" variant="outlined">
               <InputImage 
@@ -98,7 +109,20 @@ const FormCreateProject = ({title = 'Publicar nuevo proyecto', update = false}) 
               />
               Imagen de presentación
             </ButtonImage>
-          </ContentAvatar>
+          </ContentAvatar> */}
+
+            <section className="container">
+              <UploadFiles {...getRootProps({className: 'dropzone'})}>
+                <input  {...getInputProps()} />
+                <p>Arrastre los archivos o haga click para seleccionar los archivos</p>
+              </UploadFiles>
+              <aside>
+                <h4>Archivos</h4>
+                <ul>{files}</ul>
+              </aside>
+            </section>
+
+
 
           {
             update &&
@@ -211,34 +235,14 @@ const Form = styled.form`
   width: 100%;
   height: 100%;
 `
-const ImageAvatar = styled.img`
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
+
+const UploadFiles = styled.div`
+  border-style: dotted;
+  border-color: #e1e1e1;
+  font-size: 1rem;
   margin-bottom: 15px;
-  border-radius: 100px;
-`
-
-const ButtonImage = styled(Button)`
-  position: relative;
-  overflow: hidden;
-  text-align:center;
-  font-size:0.9rem;
-  display:inline;
-`
-
-const InputImage = styled.input`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  opacity: 0;
-`
-
-const ContentAvatar = styled.div`
   display: flex;
-  margin-bottom: 35px;
-  justify-content: center;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100px;
 `
