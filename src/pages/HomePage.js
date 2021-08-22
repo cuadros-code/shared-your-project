@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react'
 import styled from 'styled-components'
-import CardProject from '../components/Cards/CardProject'
-import { ProjectContext } from '../context/project/ProjectContext'
+import CardProject from 'components/Cards/CardProject'
+import { ProjectContext } from 'context/project/ProjectContext'
 
 const HomePage = () => {
 

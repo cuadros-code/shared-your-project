@@ -16,6 +16,7 @@ const ProjectState = ({children}) => {
     loading		       : false,
     projectError     : false,
     activateMyProject: null,
+    seeProject       : null,
     limitLastProjects: 10,
   }
 
@@ -26,18 +27,30 @@ const ProjectState = ({children}) => {
     
     dispatch({type: projectTypes.InitAction})
     try {
-      const newRef = storage
-          .ref('project')
-          .child(projectData.image.name)
 
-      await newRef.put(projectData.image)    
-      const urlImage = await newRef.getDownloadURL()
+      const { images, ...restValues } = projectData
+
+      const dataImages = images.map( async (file) => {
+        const newRef = storage
+                      .ref('project')
+                      .child(file.name)
+                      
+        await newRef.put(file)
+        return newRef.getDownloadURL()
+      })
+
+      const resultImages = await Promise.all( 
+        dataImages.map( async (newRef) => {
+          const arrayImages = await newRef
+          return arrayImages
+        })
+      )
 
       const newProject = await firestore
                                 .collection(collection.projects)
                                 .add({
-                                  ...projectData,
-                                  image: urlImage,
+                                  ...restValues,
+                                  image: resultImages,
                                   userId,
                                   visible: true,
                                   votes: 0,
@@ -49,7 +62,7 @@ const ProjectState = ({children}) => {
         type: projectTypes.SaveProject,
         payload: {
           id: newProject.id,
-          image: urlImage,
+          image: resultImages,
           ...projectData
         }
       })    
@@ -171,6 +184,38 @@ const ProjectState = ({children}) => {
       dispatch({type: projectTypes.ProjectError})
     }
   }
+
+  // When user cliked on project 
+  const activatedProject = async ( projectId ) => {
+
+    dispatch({type: projectTypes.InitAction})
+    try {
+      firestore
+        .collection(collection.projects)
+        .doc(projectId)
+        .onSnapshot((querySnap) => {
+          
+          let project = {
+            id: querySnap.id,
+            ...querySnap.data()
+          }
+
+         dispatch({
+           type: projectTypes.SeeProject,
+           payload: project
+         })
+        })
+
+    } catch (error) {
+      console.log(error)
+      alertError({message: 'Error al obtener información'})
+    }
+  }
+
+  // When use closed modal
+  const cleanActivatedProject = () => {
+    dispatch({ type: projectTypes.CleanSeeProject })
+  }
   
 
   return (
@@ -182,7 +227,9 @@ const ProjectState = ({children}) => {
         seeMyProject,
         deleteProject,
         getLastProjects,
-        addVote
+        addVote,
+        activatedProject,
+        cleanActivatedProject
       }}
     >
       {children}
