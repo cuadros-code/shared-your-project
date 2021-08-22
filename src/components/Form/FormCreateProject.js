@@ -16,15 +16,15 @@ const FormCreateProject = ({title = 'Publicar nuevo proyecto', update = false}) 
   });
 
   const { id } = useParams()
+
   const { projectState: { loading, activateMyProject }, 
           createProject, 
           seeMyProject,
           deleteProject } = useContext(ProjectContext)
+
   const { authState: { user } } = useContext(AuthContext)
 
   const [visible, setVisibleProject] = useState(true)
-  const [imageAvatar, setImageAvatar] = useState('')
-  const [image, setImage] = useState(null)
 
   const { valueForm, onChange, setValueForm } = useForm({
     projectName       : '',
@@ -48,34 +48,28 @@ const FormCreateProject = ({title = 'Publicar nuevo proyecto', update = false}) 
     }
     if(activateMyProject){
       setValueForm(activateMyProject)
-      setImageAvatar(activateMyProject.image)
       setVisibleProject(activateMyProject.visible)
     }
     if(!update) {
       setValueForm({})
-      setImageAvatar('')
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, activateMyProject])
   
-  const onChangeImage = (e) => {
-    const file = e.target.files[0]
-    if(!file) return
-    setImage(file)
-    const objectUrl = URL.createObjectURL(file)
-    setImageAvatar(objectUrl)
-  }
 
   const onSubmit = (e) => {
     e.preventDefault()
     const projectData = {
-      image,
+      images: acceptedFiles,
       ...valueForm
     }
+
+    // console.log(acceptedFiles);
+
     createProject(
-      projectData,
+     projectData,
       user.uid
-    )
+    ) 
   }
 
 
@@ -85,7 +79,7 @@ const FormCreateProject = ({title = 'Publicar nuevo proyecto', update = false}) 
 
   const files = acceptedFiles.map(file => (
     <li key={file.path}>
-      {file.path} - {file.size} bytes
+      {file.path}
     </li>
   ));
 
@@ -100,29 +94,16 @@ const FormCreateProject = ({title = 'Publicar nuevo proyecto', update = false}) 
             {title}
           </Typography>
 
-          {/* <ContentAvatar>
-            <ImageAvatar src={imageAvatar ? imageAvatar: placeholder} alt="avatar"/>
-            <ButtonImage color="primary" variant="outlined">
-              <InputImage 
-                onChange={onChangeImage}
-                type="file" 
-              />
-              Imagen de presentación
-            </ButtonImage>
-          </ContentAvatar> */}
-
-            <section className="container">
-              <UploadFiles {...getRootProps({className: 'dropzone'})}>
-                <input  {...getInputProps()} />
-                <p>Arrastre los archivos o haga click para seleccionar los archivos</p>
-              </UploadFiles>
-              <aside>
-                <h4>Archivos</h4>
-                <ul>{files}</ul>
-              </aside>
-            </section>
-
-
+          <section className="container">
+            <UploadFiles {...getRootProps({className: 'dropzone'})}>
+              <input  {...getInputProps()} />
+              <p>Arrastre los archivos o haga click para seleccionar los archivos</p>
+            </UploadFiles>
+            <aside>
+              <h4>Archivos</h4>
+              <ul>{files}</ul>
+            </aside>
+          </section>
 
           {
             update &&

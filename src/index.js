@@ -4,6 +4,7 @@ import App from './App'
 import ReactDOM from 'react-dom'
 import reportWebVitals from './reportWebVitals'
 import 'react-toastify/dist/ReactToastify.css';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 ReactDOM.render(
   <App />,

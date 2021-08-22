@@ -9,6 +9,8 @@ import ProductDetail from "../Modals/ProductDetail";
 const CardProject = ({project}) => {
 
   const history = useHistory()
+
+  const [actualProject, setActualProject] = useState(null)
   const { addVote } = useContext(ProjectContext)
   const [modal, setModal] = useState(false)
   const { authState:{ user } } = useContext(AuthContext)
@@ -25,13 +27,18 @@ const CardProject = ({project}) => {
     addVote(project.id, votes, project.votes )
   }
 
+  const onClickOnProject = () => {
+    setModal(true)
+    setActualProject(project)
+  }
+
   return (
     <>
       <CardContent>
         <LayoutCard
-          onClick={() => setModal(true)}
+          onClick={onClickOnProject}
         >
-          <CardImage loading="lazy" src={project.image} alt={project.projectName} />
+          <CardImage loading="lazy" src={project?.image[0]} alt={project?.projectName} />
           <CardInfo style={{ flex: 1 }}>
             <h3>{project.projectName}</h3>
             <p>{project.projectDescription}</p>
@@ -50,6 +57,7 @@ const CardProject = ({project}) => {
       <ProductDetail 
         isOpen={ modal }
         setModal={ setModal }
+        project={ actualProject }
       />
     </>
   )
