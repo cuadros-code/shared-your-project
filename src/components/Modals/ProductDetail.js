@@ -31,15 +31,29 @@ const ProductDetail = ({ isOpen, setModal, project }) => {
         </IconButton>
       </div>
 
-      <ImageCarouser>
-          {
-            galleryImages.map( (img, index) => (
-              <div key={index}>
-                <img src={img} alt="img" />
-              </div>
-            ))
-          }
-      </ImageCarouser>
+      <ContentCarousel>
+        <ImageCarouser
+          width={400}
+          dynamicHeight={false}
+          emulateTouch
+          statusFormatter={ (current, total) => `${current} de ${total}` }
+        >
+            {
+              galleryImages.map( (img, index) => (
+                <div className="content-img" key={index}>
+                  <img src={img} alt="img" />
+                </div>
+              ))
+            }
+        </ImageCarouser>
+
+        <div style={{ background: 'red'}}>
+
+        </div>
+
+      </ContentCarousel>
+
+      <p>{ project?.projectDescription }</p>
        
     </Modal>
   )
@@ -48,8 +62,11 @@ const ProductDetail = ({ isOpen, setModal, project }) => {
 export default ProductDetail
 
 const ImageCarouser = styled(Carousel)`
-  width: 500px;
-  height: 500px;
+  height: auto;
   object-fit: contain;
+`
 
+const ContentCarousel = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr;
 `

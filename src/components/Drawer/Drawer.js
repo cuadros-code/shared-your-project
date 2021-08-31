@@ -215,7 +215,10 @@ const DrawerLeft = () => {
       >
         <div id="drawer" className={`${classes.drawerHeader}`}>
           <Typography style={{fontWeight: 'bold'}} variant="body1">Shared</Typography>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton 
+            onClick={handleDrawerClose}
+            color="inherit"
+          >
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </div>
@@ -224,7 +227,9 @@ const DrawerLeft = () => {
               button
               onClick={() => history.push(routes.createProject)}
             >
-              <ListItemIcon><Add /></ListItemIcon>
+              <ListItemIcon>
+                <Add style={{color: '#fff'}} />
+              </ListItemIcon>
               <ListItemText primary='Nuevo proyecto' />
             </ListItem>
         </List>

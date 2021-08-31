@@ -41,7 +41,7 @@ const CardProject = ({project}) => {
           <CardImage loading="lazy" src={project?.image[0]} alt={project?.projectName} />
           <CardInfo style={{ flex: 1 }}>
             <h3>{project.projectName}</h3>
-            <p>{project.projectDescription}</p>
+            <Description>{project.projectDescription}</Description>
 
           </CardInfo>
 
@@ -96,11 +96,19 @@ const LayoutCard = styled.div`
   align-items: center;
 `
 
+const Description = styled.p`
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+`
+
 const CardImage = styled.img`
   object-fit: cover;
   width: 80px;
   height: 80px;
   border-radius: 5px;
+  margin-right: 10px;
 `
 const CardInfo = styled.div`
   padding: 5px 5px;
