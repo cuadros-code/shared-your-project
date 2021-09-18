@@ -8,8 +8,6 @@ import { Link } from 'react-router-dom'
 import { AuthContext } from '../context/auth/AuthContext'
 import svg from '../assets/profile.svg'
 
-
-
 const LoginPage = () => {
 
   const { register, reset, handleSubmit, formState: { errors } } = useForm()
